@@ -1,0 +1,1895 @@
+[1] <!doctype html>
+[2] <html lang="es">
+[3] <head>
+[4] <meta charset="UTF-8">
+[5] <meta name="viewport" content="width=device-width, initial-scale=1.0">
+[6] <title>WordQuest</title>
+[7] [8] <style>
+[9] body {
+[10] box-sizing: border-box;
+[11] margin: 0;
+[12] padding: 0;
+[13] font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+[14] background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+[15] min-height: 100%;
+[16] display: flex;
+[17] justify-content: center;
+[18] align-items: center;
+[19] }
+[20] html {
+[21] height: 100%;
+[22] }
+[23] .container {
+[24] width: 90%;
+[25] max-width: 900px;
+[26] background: white;
+[27] border-radius: 25px;
+[28] padding: 40px;
+[29] box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+[30] position: relative;
+[31] overflow: hidden;
+[32] }
+[33] .container::before {
+[34] content: "";
+[35] position: absolute;
+[36] top: 0;
+[37] left: 0;
+[38] right: 0;
+[39] height: 5px;
+[40] background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+[41] }
+[42] .logo-section {
+[43] text-align: center;
+[44] margin-bottom: 40px;
+[45] position: relative;
+[46] }
+[47] .logo-title {
+[48] font-size: 4em;
+[49] font-weight: 800;
+[50] background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+[51] -webkit-background-clip: text;
+[52] -webkit-text-fill-color: transparent;
+[53] background-clip: text;
+[54] margin: 0;
+[55] letter-spacing: -2px;
+[56] text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+[57] }
+[58] .logo-subtitle {
+[59] font-size: 1.2em;
+[60] color: #666;
+[61] margin: 10px 0 0 0;
+[62] font-weight: 300;
+[63] letter-spacing: 2px;
+[64] }
+[65] .floating-elements {
+[66] position: absolute;
+[67] top: 20px;
+[68] right: 30px;
+[69] font-size: 2em;
+[70] opacity: 0.1;
+[71] animation: float 6s ease-in-out infinite;
+[72] }
+[73] @keyframes float {
+[74] 0%, 100% { transform: translateY(0px) rotate(0deg); }
+[75] 50% { transform: translateY(-20px) rotate(5deg); }
+[76] }
+[77] .menu {
+[78] display: flex;
+[79] flex-direction: column;
+[80] gap: 20px;
+[81] align-items: center;
+[82] }
+[83] .level-btn {
+[84] width: 100%;
+[85] max-width: 500px;
+[86] padding: 25px;
+[87] font-size: 1.4em;
+[88] border: none;
+[89] border-radius: 20px;
+[90] cursor: pointer;
+[91] transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+[92] font-weight: 600;
+[93] color: white;
+[94] position: relative;
+[95] overflow: hidden;
+[96] box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+[97] }
+[98] .level-btn::before {
+[99] content: "";
+[100] position: absolute;
+[101] top: 0;
+[102] left: -100%;
+[103] width: 100%;
+[104] height: 100%;
+[105] background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+[106] transition: left 0.5s;
+[107] }
+[108] .level-btn:hover::before {
+[109] left: 100%;
+[110] }
+[111] .easy-btn {
+[112] background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+[113] }
+[114] .easy-btn:hover {
+[115] transform: translateY(-5px) scale(1.02);
+[116] box-shadow: 0 15px 35px rgba(132, 250, 176, 0.4);
+[117] }
+[118] .medium-btn {
+[119] background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+[120] }
+[121] .medium-btn:hover {
+[122] transform: translateY(-5px) scale(1.02);
+[123] box-shadow: 0 15px 35px rgba(252, 182, 159, 0.4);
+[124] }
+[125] .hard-btn {
+[126] background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+[127] }
+[128] .hard-btn:hover {
+[129] transform: translateY(-5px) scale(1.02);
+[130] box-shadow: 0 15px 35px rgba(255, 154, 158, 0.4);
+[131] }
+[132] .sudden-btn {
+[133] background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+[134] animation: suddenPulse 2s ease-in-out infinite;
+[135] }
+[136] .sudden-btn:hover {
+[137] transform: translateY(-5px) scale(1.02);
+[138] box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+[139] animation: none;
+[140] }
+[141] @keyframes suddenPulse {
+[142] 0%, 100% { box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3); }
+[143] 50% { box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5); }
+[144] }
+[145] .game-screen {
+[146] display: none;
+[147] }
+[148] .progress-bar {
+[149] width: 100%;
+[150] height: 35px;
+[151] background: #f0f0f0;
+[152] border-radius: 20px;
+[153] overflow: hidden;
+[154] margin-bottom: 30px;
+[155] box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+[156] }
+[157] .progress-fill {
+[158] height: 100%;
+[159] background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+[160] transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+[161] display: flex;
+[162] align-items: center;
+[163] justify-content: center;
+[164] color: white;
+[165] font-weight: bold;
+[166] font-size: 1.1em;
+[167] }
+[168] .question-card {
+[169] background: #ffffff;
+[170] padding: 40px;
+[171] border-radius: 20px;
+[172] margin-bottom: 30px;
+[173] box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+[174] border: 1px solid #f0f0f0;
+[175] position: relative;
+[176] }
+[177] .question-visual {
+[178] text-align: center;
+[179] margin-bottom: 30px;
+[180] }
+[181] .question-emoji {
+[182] font-size: 4em;
+[183] margin-bottom: 15px;
+[184] display: block;
+[185] animation: questionPulse 2s ease-in-out infinite;
+[186] }
+[187] @keyframes questionPulse {
+[188] 0%, 100% { transform: scale(1); }
+[189] 50% { transform: scale(1.05); }
+[190] }
+[191] .question-context {
+[192] font-size: 1.1em;
+[193] color: #666;
+[194] font-style: italic;
+[195] margin-bottom: 20px;
+[196] }
+[197] .question-text {
+[198] font-size: 1.6em;
+[199] color: #333;
+[200] margin-bottom: 25px;
+[201] line-height: 1.6;
+[202] text-align: center;
+[203] font-weight: 500;
+[204] }
+[205] .blank {
+[206] display: inline-block;
+[207] min-width: 180px;
+[208] border-bottom: 4px solid #667eea;
+[209] padding: 5px 15px;
+[210] margin: 0 8px;
+[211] background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+[212] border-radius: 8px 8px 0 0;
+[213] animation: blankGlow 2s ease-in-out infinite;
+[214] }
+[215] @keyframes blankGlow {
+[216] 0%, 100% { box-shadow: 0 0 0 rgba(102, 126, 234, 0.3); }
+[217] 50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+[218] }
+[219] .options-area {
+[220] display: grid;
+[221] grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+[222] gap: 15px;
+[223] margin-top: 25px;
+[224] }
+[225] .option-btn {
+[226] padding: 18px 25px;
+[227] font-size: 1.3em;
+[228] background: #ffffff;
+[229] color: #333;
+[230] border: 3px solid #e9ecef;
+[231] border-radius: 15px;
+[232] cursor: pointer;
+[233] transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+[234] font-weight: 600;
+[235] text-align: center;
+[236] position: relative;
+[237] overflow: hidden;
+[238] box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+[239] }
+[240] .option-btn:hover {
+[241] background: #f8f9fa;
+[242] border-color: #667eea;
+[243] transform: translateY(-3px);
+[244] box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+[245] }
+[246] .option-btn:disabled {
+[247] cursor: not-allowed;
+[248] transform: none;
+[249] }
+[250] .option-btn.correct {
+[251] background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+[252] border-color: #28a745;
+[253] color: #155724;
+[254] animation: correctPulse 0.6s ease-out;
+[255] }
+[256] .option-btn.incorrect {
+[257] background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+[258] border-color: #dc3545;
+[259] color: #721c24;
+[260] animation: incorrectShake 0.6s ease-out;
+[261] }
+[262] @keyframes correctPulse {
+[263] 0% { transform: scale(1); }
+[264] 50% { transform: scale(1.05); }
+[265] 100% { transform: scale(1); }
+[266] }
+[267] @keyframes incorrectShake {
+[268] 0%, 100% { transform: translateX(0); }
+[269] 25% { transform: translateX(-5px); }
+[270] 75% { transform: translateX(5px); }
+[271] }
+[272] .word-tooltip {
+[273] position: relative;
+[274] display: inline-block;
+[275] cursor: help;
+[276] border-bottom: 2px dotted #667eea;
+[277] color: #667eea;
+[278] font-weight: 600;
+[279] }
+[280] .word-tooltip:hover .tooltip-content {
+[281] visibility: visible;
+[282] opacity: 1;
+[283] transform: translateY(-10px);
+[284] }
+[285] .tooltip-content {
+[286] visibility: hidden;
+[287] opacity: 0;
+[288] position: fixed;
+[289] background: #333;
+[290] color: white;
+[291] padding: 12px 18px;
+[292] border-radius: 12px;
+[293] font-size: 1.1em;
+[294] font-weight: 600;
+[295] white-space: nowrap;
+[296] z-index: 60000;
+[297] transition: all 0.3s ease;
+[298] box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+[299] min-width: 100px;
+[300] text-align: center;
+[301] pointer-events: none;
+[302] border: 2px solid #667eea;
+[303] transform: translateY(-10px);
+[304] }
+[305] .tooltip-content::after {
+[306] content: "";
+[307] position: absolute;
+[308] bottom: -10px;
+[309] left: 50%;
+[310] transform: translateX(-50%);
+[311] border: 10px solid transparent;
+[312] border-top-color: #333;
+[313] }
+[314] .feedback {
+[315] margin-top: 25px;
+[316] padding: 20px;
+[317] border-radius: 15px;
+[318] font-size: 1.2em;
+[319] font-weight: 600;
+[320] text-align: center;
+[321] display: none;
+[322] animation: feedbackSlide 0.5s ease-out;
+[323] }
+[324] @keyframes feedbackSlide {
+[325] from { opacity: 0; transform: translateY(20px); }
+[326] to { opacity: 1; transform: translateY(0); }
+[327] }
+[328] .feedback.correct {
+[329] background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+[330] color: #155724;
+[331] border: 3px solid #28a745;
+[332] }
+[333] .feedback.incorrect {
+[334] background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+[335] color: #721c24;
+[336] border: 3px solid #dc3545;
+[337] }
+[338] .results-screen {
+[339] display: none;
+[340] text-align: center;
+[341] }
+[342] .score-display {
+[343] font-size: 3.5em;
+[344] background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+[345] -webkit-background-clip: text;
+[346] -webkit-text-fill-color: transparent;
+[347] background-clip: text;
+[348] margin: 30px 0;
+[349] font-weight: 800;
+[350] }
+[351] .back-btn {
+[352] padding: 18px 45px;
+[353] font-size: 1.3em;
+[354] background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+[355] color: white;
+[356] border: none;
+[357] border-radius: 15px;
+[358] cursor: pointer;
+[359] transition: all 0.3s ease;
+[360] font-weight: 600;
+[361] margin-top: 25px;
+[362] box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+[363] }
+[364] .back-btn:hover {
+[365] background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+[366] transform: translateY(-3px);
+[367] box-shadow: 0 10px 30px rgba(108, 117, 125, 0.4);
+[368] }
+[369] .history-section {
+[370] margin-top: 50px;
+[371] padding-top: 40px;
+[372] border-top: 2px solid #f0f0f0;
+[373] }
+[374] .tabs {
+[375] display: flex;
+[376] gap: 15px;
+[377] margin-bottom: 25px;
+[378] }
+[379] .tab-btn {
+[380] flex: 1;
+[381] padding: 15px 25px;
+[382] font-size: 1.2em;
+[383] background: #ffffff;
+[384] color: #666;
+[385] border: 2px solid #e9ecef;
+[386] border-radius: 15px;
+[387] cursor: pointer;
+[388] transition: all 0.3s ease;
+[389] font-weight: 600;
+[390] }
+[391] .tab-btn:hover {
+[392] background: #f8f9fa;
+[393] border-color: #667eea;
+[394] color: #667eea;
+[395] }
+[396] .tab-btn.active {
+[397] background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+[398] color: white;
+[399] border-color: #5568d3;
+[400] }
+[401] .tab-content {
+[402] display: none;
+[403] }
+[404] .tab-content.active {
+[405] display: block;
+[406] }
+[407] .medal {
+[408] font-size: 1.8em;
+[409] margin-right: 12px;
+[410] }
+[411] .ranking-item, .history-item {
+[412] background: #ffffff;
+[413] padding: 20px;
+[414] border-radius: 15px;
+[415] margin-bottom: 15px;
+[416] display: flex;
+[417] justify-content: space-between;
+[418] align-items: center;
+[419] border-left: 5px solid transparent;
+[420] box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+[421] transition: all 0.3s ease;
+[422] }
+[423] .ranking-item:hover, .history-item:hover {
+[424] transform: translateY(-2px);
+[425] box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+[426] }
+[427] .ranking-item.gold {
+[428] border-left-color: #ffd700;
+[429] background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+[430] }
+[431] .ranking-item.silver {
+[432] border-left-color: #c0c0c0;
+[433] background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+[434] }
+[435] .ranking-item.bronze {
+[436] border-left-color: #cd7f32;
+[437] background: linear-gradient(135deg, #fdf2e9 0%, #f4e4d1 100%);
+[438] }
+[439] .medal-display {
+[440] text-align: center;
+[441] margin: 40px 0;
+[442] }
+[443] .medal-icon {
+[444] font-size: 6em;
+[445] margin-bottom: 25px;
+[446] display: block;
+[447] animation: medalBounce 1.2s ease-out;
+[448] }
+[449] .medal-icon.gray {
+[450] filter: grayscale(100%);
+[451] opacity: 0.4;
+[452] }
+[453] @keyframes medalBounce {
+[454] 0% { transform: scale(0) rotate(180deg); opacity: 0; }
+[455] 50% { transform: scale(1.3) rotate(0deg); opacity: 1; }
+[456] 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+[457] }
+[458] .medal-text {
+[459] font-size: 1.8em;
+[460] font-weight: 700;
+[461] margin-bottom: 15px;
+[462] }
+[463] .medal-text.gold {
+[464] background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+[465] -webkit-background-clip: text;
+[466] -webkit-text-fill-color: transparent;
+[467] background-clip: text;
+[468] }
+[469] .medal-text.silver {
+[470] background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+[471] -webkit-background-clip: text;
+[472] -webkit-text-fill-color: transparent;
+[473] background-clip: text;
+[474] }
+[475] .medal-text.bronze {
+[476] background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%);
+[477] -webkit-background-clip: text;
+[478] -webkit-text-fill-color: transparent;
+[479] background-clip: text;
+[480] }
+[481] .medal-text.gray { color: #999; }
+[482] .name-input-section {
+[483] background: #ffffff;
+[484] padding: 35px;
+[485] border-radius: 20px;
+[486] margin: 35px 0;
+[487] border: 4px solid #e9ecef;
+[488] box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+[489] }
+[490] .name-input-section.gold { border-color: #ffd700; }
+[491] .name-input-section.silver { border-color: #c0c0c0; }
+[492] .name-input-section.bronze { border-color: #cd7f32; }
+[493] .name-input {
+[494] width: 100%;
+[495] padding: 18px;
+[496] font-size: 1.3em;
+[497] border: 3px solid #e9ecef;
+[498] border-radius: 15px;
+[499] margin: 20px 0;
+[500] text-align: center;
+[501] font-weight: 600;
+[502] transition: all 0.3s ease;
+[503] }
+[504] .name-input:focus {
+[505] outline: none;
+[506] border-color: #667eea;
+[507] box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+[508] }
+[509] .save-name-btn {
+[510] width: 100%;
+[511] padding: 18px;
+[512] font-size: 1.3em;
+[513] background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+[514] color: white;
+[515] border: none;
+[516] border-radius: 15px;
+[517] cursor: pointer;
+[518] transition: all 0.3s ease;
+[519] font-weight: 600;
+[520] box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+[521] }
+[522] .save-name-btn:hover {
+[523] background: linear-gradient(135deg, #5568d3 0%, #6a4c93 100%);
+[524] transform: translateY(-3px);
+[525] box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+[526] }
+[527] .save-name-btn:disabled {
+[528] background: #ccc;
+[529] cursor: not-allowed;
+[530] transform: none;
+[531] box-shadow: none;
+[532] }
+[533] .player-name {
+[534] font-weight: 700;
+[535] color: #333;
+[536] }
+[537] .dictionary-content {
+[538] max-height: 60vh;
+[539] overflow-y: auto;
+[540] padding: 20px;
+[541] background: #f8f9fa;
+[542] border-radius: 15px;
+[543] }
+[544] .dictionary-content::-webkit-scrollbar {
+[545] width: 8px;
+[546] }
+[547] .dictionary-content::-webkit-scrollbar-track {
+[548] background: #e9ecef;
+[549] border-radius: 10px;
+[550] }
+[551] .dictionary-content::-webkit-scrollbar-thumb {
+[552] background: #667eea;
+[553] border-radius: 10px;
+[554] }
+[555] .exit-btn:hover {
+[556] background: #c82333 !important;
+[557] transform: translateY(-2px);
+[558] box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+[559] }
+[560] .timer-display {
+[561] position: fixed;
+[562] top: 20px;
+[563] left: 20px;
+[564] background: rgba(255, 255, 255, 0.95);
+[565] padding: 15px 20px;
+[566] border-radius: 15px;
+[567] box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+[568] z-index: 1000;
+[569] font-size: 1.2em;
+[570] font-weight: 600;
+[571] color: #333;
+[572] display: none;
+[573] }
+[574] .countdown-timer {
+[575] font-size: 2.5em;
+[576] font-weight: 800;
+[577] color: #ff6b6b;
+[578] text-align: center;
+[579] margin: 20px 0;
+[580] text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+[581] }
+[582] .countdown-timer.warning {
+[583] animation: timerWarning 1s ease-in-out infinite;
+[584] }
+[585] @keyframes timerWarning {
+[586] 0%, 100% { color: #ff6b6b; transform: scale(1); }
+[587] 50% { color: #dc3545; transform: scale(1.05); }
+[588] }
+[589] @media (max-width: 768px) {
+[590] .container {
+[591] padding: 25px;
+[592] }
+[593] .logo-title {
+[594] font-size: 3em;
+[595] }
+[596] .options-area {
+[597] grid-template-columns: 1fr;
+[598] }
+[599] .question-text {
+[600] font-size: 1.4em;
+[601] }
+[602] }
+[603] </style>
+[604] [605] <style>@view-transition { navigation: auto; }</style>
+[606] [607] <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+[608] </head>
+[609] <body>
+[610] 
+[611] <div class="timer-display" id="timerDisplay">
+[612] <span id="gameTimer">00:00</span>
+[613] </div>
+[614] 
+[615] <div class="container">
+[616] <div id="menuScreen" class="menu-screen">
+[617] <div class="floating-elements">🚀</div>
+[618] <div class="logo-section">
+[619] <h1 class="logo-title" id="gameTitle">WordQuest</h1>
+[620] <p class="logo-subtitle">Aventura de Aprendizaje en Inglés</p>
+[621] </div>
+[622] 
+[623] <div class="menu">
+[624] <button class="level-btn easy-btn" onclick="startGame('easy')">
+[625] <span id="easyLabel">Explorador</span> - 10 frases básicas
+[626] </button>
+[627] <button class="level-btn medium-btn" onclick="startGame('medium')">
+[628] <span id="mediumLabel">Aventurero</span> - 20 frases intermedias
+[629] </button>
+[630] <button class="level-btn hard-btn" onclick="startGame('hard')">
+[631] <span id="hardLabel">Maestro</span> - 30 frases avanzadas
+[632] </button>
+[633] <button class="level-btn sudden-btn" onclick="startSuddenMode()" style="margin-top: 20px;">
+[634] Muerte Súbita - 30 frases contra el reloj
+[635] </button>
+[636] <button class="level-btn" onclick="showDictionary()" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); margin-top: 10px;">
+[637] Diccionario de Palabras - Practica vocabulario
+[638] </button>
+[639] </div>
+[640] 
+[641] <div class="history-section">
+[642] <div class="tabs">
+[643] <button class="tab-btn active" onclick="showTab('history', event)">Historial</button>
+[644] <button class="tab-btn" onclick="showTab('ranking', event)">Ranking</button>
+[645] </div>
+[646] <div id="historyTab" class="tab-content active">
+[647] <div id="historyList"></div>
+[648] </div>
+[649] <div id="rankingTab" class="tab-content">
+[650] <div id="rankingList"></div>
+[651] </div>
+[652] </div>
+[653] </div>
+[654] 
+[655] <div id="gameScreen" class="game-screen">
+[656] <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+[657] <div class="progress-bar" style="flex: 1; margin-right: 20px;">
+[658] <div id="progressFill" class="progress-fill">0/0</div>
+[659] </div>
+[660] <button class="exit-btn" onclick="showExitConfirmation()" style="padding: 12px 20px; background: #dc3545; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+[661] Salir
+[662] </button>
+[663] </div>
+[664] <div id="suddenTimer" class="countdown-timer" style="display: none;">60</div>
+[665] 
+[666] <div class="question-card">
+[667] <div class="question-visual">
+[668] <span class="question-emoji" id="questionEmoji"></span>
+[669] <div class="question-context" id="questionContext">Completa la frase en inglés</div>
+[670] </div>
+[671] <div id="questionText" class="question-text"></div>
+[672] <div class="options-area" id="optionsArea"></div>
+[673] <div id="feedback" class="feedback"></div>
+[674] </div>
+[675] </div>
+[676] 
+[677] <div id="resultsScreen" class="results-screen">
+[678] <h1>¡Aventura Completada!</h1>
+[679] <div class="score-display" id="finalScore"></div>
+[680] <p id="resultMessage" style="font-size: 1.4em; color: #666;"></p>
+[681] <div class="medal-display" id="medalDisplay">
+[682] <span class="medal-icon" id="medalIcon"></span>
+[683] <div class="medal-text" id="medalText"></div>
+[684] </div>
+[685] <div class="name-input-section" id="nameInputSection" style="display: none;">
+[686] <h3 style="margin-top: 0; color: #333;">¡Felicidades! Ingresa tu nombre para el ranking:</h3>
+[687] <input type="text" id="playerNameInput" class="name-input" placeholder="Escribe tu nombre aquí..." maxlength="20">
+[688] <button class="save-name-btn" id="saveNameBtn" onclick="savePlayerName()">Guardar en Ranking</button>
+[689] </div>
+[690] <button class="back-btn" onclick="backToMenu()">Volver al Menú</button>
+[691] </div>
+[692] 
+[693] [694] <div id="exitModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+[695] <div class="modal-content" style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+[696] <h3 style="color: #333; margin-bottom: 20px;">¿Estás seguro?</h3>
+[697] <p style="color: #666; margin-bottom: 30px;">Si sales ahora, perderás el progreso actual del juego.</p>
+[698] <div style="display: flex; gap: 15px; justify-content: center;">
+[699] <button onclick="confirmExit()" style="padding: 12px 25px; background: #dc3545; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">Sí, salir</button>
+[700] <button onclick="cancelExit()" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">Cancelar</button>
+[701] </div>
+[702] </div>
+[703] </div>
+[704] 
+[705] [706] <div id="dictionaryScreen" class="dictionary-screen" style="display: none;">
+[707] <h1 style="text-align: center; color: #667eea; margin-bottom: 30px;">Diccionario de Palabras</h1>
+[708] <div style="text-align: center; margin-bottom: 30px;">
+[709] <button class="tab-btn active" onclick="showDictionaryLevel('easy')" id="dictEasyBtn">Explorador</button>
+[710] <button class="tab-btn" onclick="showDictionaryLevel('medium')" id="dictMediumBtn">Aventurero</button>
+[711] <button class="tab-btn" onclick="showDictionaryLevel('hard')" id="dictHardBtn">Maestro</button>
+[721] </div>
+[722] <div id="dictionaryContent" class="dictionary-content"></div>
+[723] <button class="back-btn" onclick="backToMenuFromDictionary()" style="margin-top: 30px;">Volver al Menú</button>
+[724] </div>
+[725] </div>
+[726] 
+[727] <script>
+[728] 
+[729] // --- CONFIGURACIÓN Y DATOS ---
+[730] 
+[731] const defaultConfig = {
+[732] game_title: "WordQuest",
+[733] easy_label: "Explorador",
+[734] medium_label: "Aventurero",
+[735] hard_label: "Maestro"
+[736] };
+[737] 
+[738] // Diccionario de traducciones (Expandido)
+[739] const translations = {
+[740] 'am': 'soy/estoy',
+[741] 'is': 'es/está',
+[742] 'are': 'son/están',
+[743] 'was': 'era/estaba',
+[744] 'were': 'eran/estaban',
+[745] 'have': 'he/has',
+[746] 'has': 'ha/tiene',
+[747] 'had': 'había/tenía',
+[748] 'will': 'será/estará',
+[749] 'would': 'sería/estaría',
+[750] 'can': 'puede/puedo',
+[751] 'could': 'podría/pude',
+[752] 'should': 'debería',
+[753] 'must': 'debe/debo',
+[754] 'might': 'podría/quizás',
+[755] 'may': 'puede/tal vez',
+[756] 'do': 'hacer',
+[757] 'does': 'hace',
+[758] 'did': 'hizo/hacía',
+[759] 'like': 'gustar',
+[760] 'likes': 'gusta',
+[761] 'go': 'ir',
+[762] 'goes': 'va',
+[763] 'study': 'estudiar',
+[764] 'studies': 'estudia',
+[765] 'read': 'leer',
+[766] 'reads': 'lee',
+[767] 'drink': 'beber',
+[768] 'drinks': 'bebe',
+[769] 'eat': 'comer',
+[770] 'eats': 'come',
+[771] 'play': 'jugar',
+[772] 'plays': 'juega',
+[773] 'work': 'trabajar',
+[774] 'works': 'trabaja',
+[775] 'live': 'vivir',
+[776] 'lives': 'vive',
+[777] 'love': 'amar',
+[778] 'loves': 'ama',
+[779] 'want': 'querer',
+[780] 'wants': 'quiere',
+[781] 'need': 'necesitar',
+[782] 'needs': 'necesita',
+[783] 'know': 'saber/conocer',
+[784] 'knows': 'sabe/conoce',
+[785] 'think': 'pensar',
+[786] 'thinks': 'piensa',
+[787] 'feel': 'sentir',
+[788] 'feels': 'siente',
+[789] 'see': 'ver',
+[790] 'sees': 've',
+[791] 'hear': 'oir',
+[792] 'hears': 'oye',
+[793] 'speak': 'hablar',
+[794] 'speaks': 'habla',
+[795] 'write': 'escribir',
+[796] 'writes': 'escribe',
+[797] 'learn': 'aprender',
+[798] 'learns': 'aprende',
+[799] 'teach': 'enseñar',
+[800] 'teaches': 'enseña',
+[801] 'understand': 'entender',
+[802] 'understands': 'entiende',
+[803] 'remember': 'recordar',
+[804] 'remembers': 'recuerda',
+[805] 'forget': 'olvidar',
+[806] 'forgets': 'olvida',
+[807] 'help': 'ayudar',
+[808] 'helps': 'ayuda',
+[809] 'try': 'intentar',
+[810] 'tries': 'intenta',
+[811] 'find': 'encontrar',
+[812] 'finds': 'encuentra',
+[813] 'look': 'mirar',
+[814] 'looks': 'mira',
+[815] 'listen': 'escuchar',
+[816] 'listens': 'escucha',
+[817] 'watch': 'ver/observar',
+[818] 'watches': 've/observa',
+[819] 'wait': 'esperar',
+[820] 'waits': 'espera',
+[821] 'hope': 'esperar (deseo)',
+[822] 'hopes': 'espera (deseo)',
+[823] 'wake': 'despertar',
+[824] 'wakes': 'despierta',
+[825] 'run': 'correr',
+[826] 'runs': 'corre',
+[827] 'cook': 'cocinar',
+[828] 'cooks': 'cocina',
+[829] 'contact': 'contactar',
+[830] 'contacts': 'contacta',
+[831] 'drive': 'conducir',
+[832] 'drives': 'conduce',
+[833] 'buy': 'comprar',
+[834] 'buys': 'compra',
+[835] 'draw': 'dibujar',
+[836] 'draws': 'dibuja',
+[837] 'travel': 'viajar',
+[838] 'travels': 'viaja',
+[839] 'send': 'enviar',
+[840] 'sends': 'envía',
+[841] 'swim': 'nadar',
+[842] 'swims': 'nada',
+[843] 'organize': 'organizar',
+[844] 'organizes': 'organiza',
+[845] 'repair': 'reparar',
+[846] 'repairs': 'repara',
+[847] 'grow': 'crecer/cultivar',
+[848] 'grows': 'crece/cultiva',
+[849] 'sing': 'cantar',
+[850] 'sings': 'canta',
+[851] 'exercise': 'ejercitar',
+[852] 'exercises': 'ejercita',
+[853] // Palabras del Nivel Difícil añadidas
+[854] 'achieve': 'lograr',
+[855] 'achieves': 'logra',
+[856] 'analyze': 'analizar',
+[857] 'analyzes': 'analiza',
+[858] 'make': 'hacer',
+[859] 'makes': 'hace',
+[860] 'develop': 'desarrollar',
+[861] 'develops': 'desarrolla',
+[862] 'evaluate': 'evaluar',
+[863] 'evaluates': 'evalúa',
+[864] 'coordinate': 'coordinar',
+[865] 'coordinates': 'coordina',
+[866] 'portray': 'interpretar/retratar',
+[867] 'portrays': 'interpreta/retrata',
+[868] 'examine': 'examinar',
+[869] 'examines': 'examina',
+[870] 'decide': 'decidir',
+[871] 'decides': 'decide',
+[872] 'create': 'crear',
+[873] 'creates': 'crea',
+[874] 'sequence': 'secuenciar',
+[875] 'sequences': 'secuencia',
+[876] 'execute': 'ejecutar',
+[877] 'executes': 'ejecuta',
+[878] 'appraise': 'tasar/evaluar',
+[879] 'appraises': 'tasa/evalúa',
+[880] 'test': 'probar',
+[881] 'tests': 'prueba',
+[882] 'maintain': 'mantener',
+[883] 'maintains': 'mantiene',
+[884] 'perform': 'realizar',
+[885] 'performs': 'realiza',
+[886] 'manage': 'gestionar',
+[887] 'manages': 'gestiona',
+[888] 'formulate': 'formular',
+[889] 'formulates': 'formula',
+[890] 'monitor': 'monitorear',
+[891] 'monitors': 'monitorea',
+[892] 'handle': 'manejar',
+[893] 'handles': 'maneja',
+[894] 'implement': 'implementar',
+[895] 'implements': 'implementa',
+[896] 'publish': 'publicar',
+[897] 'publishes': 'publica',
+[898] 'transform': 'transformar',
+[899] 'transforms': 'transforma',
+[900] 'design': 'diseñar',
+[901] 'designs': 'diseña',
+[902] 'preserve': 'preservar',
+[903] 'preserves': 'preserva',
+[904] 'research': 'investigar',
+[905] 'researches': 'investiga',
+[906] 'facilitate': 'facilitar',
+[907] 'facilitates': 'facilita'
+[908] };
+[909] 
+[910] // Preguntas por nivel (Corregidas)
+[911] const questions = {
+[912] easy: [
+[913] {
+[914] emoji: "👋",
+[915] context: "Saludos básicos",
+[916] question: "Hello! I <span class='blank'></span> Maria.",
+[917] options: ["am", "is", "are", "be"],
+[918] correct: 0,
+[919] feedback: "¡Perfecto! 'I am' es la forma correcta para presentarse. En inglés siempre usamos 'am' con 'I'."
+[920] },
+[921] {
+[922] emoji: "🏠",
+[923] context: "Describiendo tu hogar",
+[924] question: "This <span class='blank'></span> my house.",
+[925] options: ["am", "is", "are", "be"],
+[926] correct: 1,
+[927] feedback: "¡Excelente! 'This is' se usa para señalar algo cercano. 'This' siempre va con 'is'."
+[928] },
+[929] {
+[930] emoji: "🎓",
+[931] context: "En la escuela",
+[932] question: "We <span class='blank'></span> students.",
+[933] options: ["am", "is", "are", "be"],
+[934] correct: 2,
+[935] feedback: "¡Muy bien! 'We are' es correcto. Con 'we', 'you' (plural) y 'they' usamos 'are'."
+[936] },
+[937] // Error corregido: Objeto vacío eliminado
+[938] {
+[939] emoji: "🐶",
+[940] context: "Hablando de mascotas",
+[941] question: "My dog <span class='blank'></span> very friendly.",
+[942] options: ["am", "is", "are", "be"],
+[943] correct: 1,
+[944] feedback: "¡Genial! 'My dog is' es correcto. Los animales (he/she/it) usan 'is'."
+[945] },
+[946] {
+[947] emoji: "🍎",
+[948] context: "Comida favorita",
+[949] question: "I <span class='blank'></span> apples every day.",
+[950] options: ["eat", "eats", "eating", "ate"],
+[951] correct: 0,
+[952] feedback: "¡Perfecto! 'I eat' es la forma base del verbo. Con 'I', 'you', 'we', 'they' no agregamos 's'."
+[953] },
+[954] {
+[955] emoji: "⚽",
+[956] context: "Deportes y hobbies",
+[957] question: "She <span class='blank'></span> soccer on weekends.",
+[958] options: ["play", "plays", "playing", "played"],
+[959] correct: 1,
+[960] feedback: "¡Excelente! 'She plays' es correcto. Con 'he', 'she', 'it' agregamos 's' al verbo."
+[961] },
+[962] {
+[963] emoji: "🚌",
+[964] context: "Rutina escolar",
+[965] question: "They <span class='blank'></span> to school by bus.",
+[966] options: ["go", "goes", "going", "went"],
+[967] correct: 0,
+[968] feedback: "¡Muy bien! 'They go' usa la forma base. 'They' no necesita 's' en el verbo."
+[969] },
+[970] // Error corregido: Objeto vacío eliminado
+[971] {
+[972] emoji: "📚",
+[973] context: "Actividades de lectura",
+[974] question: "He <span class='blank'></span> books in the library.",
+[975] options: ["read", "reads", "reading", "readed"],
+[976] correct: 1,
+[977] feedback: "¡Genial! 'He reads' es correcto. Con 'he' agregamos 's' al verbo 'read'."
+[978] },
+[979] {
+[980] emoji: "⏰",
+[981] context: "Rutina matutina",
+[982] question: "I <span class='blank'></span> up at 7 AM.",
+[983] options: ["wake", "wakes", "waking", "woke"],
+[984] correct: 0,
+[985] feedback: "¡Perfecto! 'I wake up' es la forma correcta. 'Wake up' significa despertar."
+[986] },
+[987] {
+[988] emoji: "🎵",
+[989] context: "Música y entretenimiento",
+[990] question: "We <span class='blank'></span> to music together.",
+[991] options: ["listen", "listens", "listening", "listened"],
+[992] correct: 0,
+[993] feedback: "¡Excelente! 'We listen' es correcto. 'Listen to' significa escuchar algo específico."
+[994] }
+[995] ],
+[996] medium: [
+[997] {
+[998] emoji: "☕",
+[999] context: "Rutina matutina",
+[1000] question: "Every morning, I <span class='blank'></span> coffee before work.",
+[1001] options: ["drink", "drinks", "drinking", "drank"],
+[1002] correct: 0,
+[1003] feedback: "¡Perfecto! 'I drink' es correcto para rutinas. 'Every morning' indica una acción habitual."
+[1004] },
+[1005] {
+[1006] emoji: "💼",
+[1007] context: "Vida laboral",
+[1008] question: "She <span class='blank'></span> in a big company downtown.",
+[1009] options: ["work", "works", "working", "worked"],
+[1010] correct: 1,
+[1011] feedback: "¡Excelente! 'She works' es correcto. Con 'she' siempre agregamos 's' al verbo."
+[1012] },
+[1013] {
+[1014] emoji: "📈",
+[1015] context: "Educación y aprendizaje",
+[1016] question: "They <span class='blank'></span> English three times a week.",
+[1017] options: ["study", "studies", "studying", "studied"],
+[1018] correct: 0,
+[1019] feedback: "¡Muy bien! 'They study' es la forma correcta. 'Three times a week' indica frecuencia."
+[1020] },
+[1021] {
+[1022] emoji: "🏃",
+[1023] context: "Ejercicio y salud",
+[1024] question: "He <span class='blank'></span> in the park every evening.",
+[1025] options: ["run", "runs", "running", "ran"],
+[1026] correct: 1,
+[1027] feedback: "¡Genial! 'He runs' es correcto. 'Every evening' muestra que es una rutina regular."
+[1028] },
+[1029] {
+[1030] emoji: "🍲",
+[1031] context: "Cocina y comidas",
+[1032] question: "My mother <span class='blank'></span> delicious meals for us.",
+[1033] options: ["cook", "cooks", "cooking", "cooked"],
+[1034] correct: 1,
+[1035] feedback: "¡Perfecto! 'My mother cooks' es correcto. 'Mother' es tercera persona singular (she)."
+[1036] },
+[1037] {
+[1038] emoji: "📱",
+[1039] context: "Tecnología y comunicación",
+[1040] question: "We <span class='blank'></span> our friends on social media.",
+[1041] options: ["contact", "contacts", "contacting", "contacted"],
+[1042] correct: 0,
+[1043] feedback: "¡Excelente! 'We contact' es la forma correcta. 'We' usa la forma base del verbo."
+[1044] },
+[1045] {
+[1046] emoji: "🚗",
+[1047] context: "Transporte",
+[1048] question: "I <span class='blank'></span> to work because it's faster.",
+[1049] options: ["drive", "drives", "driving", "drove"],
+[1050] correct: 0,
+[1051] feedback: "¡Muy bien! 'I drive' es correcto. Es una acción habitual que describes en presente."
+[1052] },
+[1053] {
+[1054] emoji: "🎬",
+[1055] context: "Entretenimiento",
+[1056] question: "She <span class='blank'></span> movies on Netflix every weekend.",
+[1057] options: ["watch", "watches", "watching", "watched"],
+[1058] correct: 1,
+[1059] feedback: "¡Genial! 'She watches' es correcto. 'Every weekend' indica una rutina regular."
+[1060] },
+[1061] {
+[1062] emoji: "🛒",
+[1063] context: "Compras y consumo",
+[1064] question: "They <span class='blank'></span> groceries at the supermarket.",
+[1065] options: ["buy", "buys", "buying", "bought"],
+[1066] correct: 0,
+[1067] feedback: "¡Perfecto! 'They buy' es la forma correcta. 'They' siempre usa la forma base."
+[1068] },
+[1069] {
+[1070] emoji: "🎨",
+[1071] context: "Arte y creatividad",
+[1072] question: "He <span class='blank'></span> beautiful pictures in his free time.",
+[1073] options: ["draw", "draws", "drawing", "drew"],
+[1074] correct: 1,
+[1075] feedback: "¡Excelente! 'He draws' es correcto. Es su hobby regular, por eso usamos presente simple."
+[1076] },
+[1077] {
+[1078] emoji: "✈️",
+[1079] context: "Viajes y cultura",
+[1080] question: "We <span class='blank'></span> to different countries every year.",
+[1081] options: ["travel", "travels", "traveling", "traveled"],
+[1082] correct: 0,
+[1083] feedback: "¡Muy bien! 'We travel' es correcto. 'Every year' indica una acción repetitiva."
+[1084] },
+[1085] {
+[1086] emoji: "✉️",
+[1087] context: "Comunicación profesional",
+[1088] question: "She <span class='blank'></span> important emails to clients daily.",
+[1089] options: ["send", "sends", "sending", "sent"],
+[1090] correct: 1,
+[1091] feedback: "¡Genial! 'She sends' es correcto. 'Daily' muestra que es parte de su rutina laboral."
+[1092] },
+[1093] {
+[1094] emoji: "🏊",
+[1095] context: "Deportes acuáticos",
+[1096] question: "I <span class='blank'></span> in the pool twice a week.",
+[1097] options: ["swim", "swims", "swimming", "swam"],
+[1098] correct: 0,
+[1099] feedback: "¡Perfecto! 'I swim' es la forma correcta. 'Twice a week' indica frecuencia regular."
+[1100] },
+[1101] {
+[1102] emoji: "🎉",
+[1103] context: "Eventos y celebraciones",
+[1104] question: "They <span class='blank'></span> their birthday parties at home.",
+[1105] options: ["organize", "organizes", "organizing", "organized"],
+[1106] correct: 0,
+[1107] feedback: "¡Excelente! 'They organize' es correcto. Es su costumbre habitual para celebraciones."
+[1108] },
+[1109] {
+[1110] emoji: "🔧",
+[1111] context: "Reparaciones y mantenimiento",
+[1112] question: "He <span class='blank'></span> his car every month.",
+[1113] options: ["repair", "repairs", "repairing", "repaired"],
+[1114] correct: 1,
+[1115] feedback: "¡Muy bien! 'He repairs' es correcto. 'Every month' indica una rutina de mantenimiento."
+[1116] },
+[1117] {
+[1118] emoji: "👩‍🏫",
+[1119] context: "Educación y enseñanza",
+[1120] question: "My teacher <span class='blank'></span> us new vocabulary every class.",
+[1121] options: ["teach", "teaches", "teaching", "taught"],
+[1122] correct: 1,
+[1123] feedback: "¡Genial! 'My teacher teaches' es correcto. 'Teacher' es tercera persona singular."
+[1124] },
+[1125] {
+[1126] emoji: "🌱",
+[1127] context: "Jardinería y naturaleza",
+[1128] question: "We <span class='blank'></span> vegetables in our garden.",
+[1129] options: ["grow", "grows", "growing", "grew"],
+[1130] correct: 0,
+[1131] feedback: "¡Perfecto! 'We grow' es la forma correcta. Es una actividad que hacen regularmente."
+[1132] },
+[1133] {
+[1134] emoji: "🎤",
+[1135] context: "Música y arte",
+[1136] question: "She <span class='blank'></span> in the church choir every Sunday.",
+[1137] options: ["sing", "sings", "singing", "sang"],
+[1138] correct: 1,
+[1139] feedback: "¡Excelente! 'She sings' es correcto. 'Every Sunday' muestra que es una actividad regular."
+[1140] },
+[1141] {
+[1142] emoji: "💻",
+[1143] context: "Trabajo y tecnología",
+[1144] question: "I <span class='blank'></span> reports for my boss weekly.",
+[1145] options: ["write", "writes", "writing", "wrote"],
+[1146] correct: 0,
+[1147] feedback: "¡Muy bien! 'I write' es correcto. 'Weekly' indica que es parte de tu rutina laboral."
+[1148] },
+[1149] {
+[1150] emoji: "🧘",
+[1151] context: "Ejercicio y bienestar",
+[1152] question: "They <span class='blank'></span> together in the morning for fitness.",
+[1153] options: ["exercise", "exercises", "exercising", "exercised"],
+[1154] correct: 0,
+[1155] feedback: "¡Genial! 'They exercise' es la forma correcta. Es su rutina matutina de ejercicio."
+[1156] }
+[1157] ],
+[1158] hard: [
+[1159] {
+[1160] emoji: "🎯",
+[1161] context: "Metas y objetivos profesionales",
+[1162] question: "She consistently <span class='blank'></span> her quarterly sales targets.",
+[1163] options: ["achieve", "achieves", "achieving", "achieved"],
+[1164] correct: 1,
+[1165] feedback: "¡Excelente! 'She achieves' es correcto. 'Consistently' indica una acción habitual exitosa."
+[1166] },
+[1167] {
+[1168] emoji: "🔬",
+[1169] context: "Investigación científica",
+[1170] question: "The researchers <span class='blank'></span> complex data patterns daily.",
+[1171] options: ["analyze", "analyzes", "analyzing", "analyzed"],
+[1172] correct: 0,
+[1173] feedback: "¡Perfecto! 'The researchers analyze' es correcto. 'Researchers' es plural, usa la forma base."
+[1174] },
+[1175] {
+[1176] emoji: "🏛️",
+[1177] context: "Gobierno y administración",
+[1178] question: "The committee <span class='blank'></span> important policy decisions.",
+[1179] options: ["make", "makes", "making", "made"],
+[1180] correct: 1,
+[1181] feedback: "¡Muy bien! 'The committee makes' es correcto. 'Committee' es singular colectivo, usa 'makes'."
+[1182] },
+[1183] {
+[1184] emoji: "💡",
+[1185] context: "Innovación y desarrollo",
+[1186] question: "Our team <span class='blank'></span> innovative solutions for clients.",
+[1187] options: ["develop", "develops", "developing", "developed"],
+[1188] correct: 0,
+[1189] feedback: "¡Genial! 'Our team develop' es correcto. 'Team' puede ser plural en este contexto (refiriéndose a los miembros)."
+[1190] },
+[1191] {
+[1192] emoji: "💹",
+[1193] context: "Análisis financiero",
+[1194] question: "He carefully <span class='blank'></span> market trends before investing.",
+[1195] options: ["evaluate", "evaluates", "evaluating", "evaluated"],
+[1196] correct: 1,
+[1197] feedback: "¡Excelente! 'He evaluates' es correcto. 'Carefully' describe cómo realiza la evaluación."
+[1198] },
+[1199] {
+[1200] emoji: "🌐",
+[1201] context: "Comunicación internacional",
+[1202] question: "They <span class='blank'></span> with partners across different time zones.",
+[1203] options: ["coordinate", "coordinates", "coordinating", "coordinated"],
+[1204] correct: 0,
+[1205] feedback: "¡Perfecto! 'They coordinate' es la forma correcta para acciones habituales de coordinación."
+[1206] },
+[1207] {
+[1208] emoji: "🎭",
+[1209] context: "Arte y performance",
+[1210] question: "The actor <span class='blank'></span> different characters masterfully.",
+[1211] options: ["portray", "portrays", "portraying", "portrayed"],
+[1212] correct: 1,
+[1213] feedback: "¡Muy bien! 'The actor portrays' es correcto. Describe su habilidad artística habitual."
+[1214] },
+[1215] {
+[1216] emoji: "🧐",
+[1217] context: "Investigación y análisis",
+[1218] question: "We <span class='blank'></span> every detail before making conclusions.",
+[1219] options: ["examine", "examines", "examining", "examined"],
+[1220] correct: 0,
+[1221] feedback: "¡Genial! 'We examine' es correcto. Describe su metodología de investigación rigurosa."
+[1222] },
+[1223] {
+[1224] emoji: "⚖️",
+[1225] context: "Sistema legal",
+[1226] question: "The judge <span class='blank'></span> cases based on evidence and law.",
+[1227] options: ["decide", "decides", "deciding", "decided"],
+[1228] correct: 1,
+[1229] feedback: "¡Excelente! 'The judge decides' es correcto. Describe su función judicial habitual."
+[1230] },
+[1231] {
+[1232] emoji: "🏙️",
+[1233] context: "Arquitectura y construcción",
+[1234] question: "The architects <span class='blank'></span> sustainable building designs.",
+[1235] options: ["create", "creates", "creating", "created"],
+[1236] correct: 0,
+[1237] feedback: "¡Perfecto! 'The architects create' es correcto. 'Architects' es plural, usa la forma base."
+[1238] },
+[1239] {
+[1240] emoji: "🧬",
+[1241] context: "Biotecnología",
+[1242] question: "She <span class='blank'></span> genetic sequences for medical research.",
+[1243] options: ["sequence", "sequences", "sequencing", "sequenced"],
+[1244] correct: 1,
+[1245] feedback: "¡Muy bien! 'She sequences' es correcto. Describe su trabajo especializado en genética."
+[1246] },
+[1247] {
+[1248] emoji: "🎼",
+[1249] context: "Composición musical",
+[1250] question: "The composer <span class='blank'></span> symphonies for orchestras worldwide.",
+[1S51] options: ["write", "writes", "writing", "wrote"],
+[1S52] correct: 1,
+[1S53] feedback: "¡Genial! 'The composer writes' es correcto. Describe su actividad creativa profesional."
+[1S54] },
+[1S55] {
+[1S56] emoji: "🌊",
+[1S57] context: "Ciencias ambientales",
+[1S58] question: "Marine biologists <span class='blank'></span> ocean ecosystems regularly.",
+[1S59] options: ["study", "studies", "studying", "studied"],
+[1S60] correct: 0,
+[1S61] feedback: "¡Excelente! 'Marine biologists study' es correcto. Es plural, usa la forma base del verbo."
+[1S62] },
+[1S63] {
+[1S64] emoji: "🚀",
+[1S65] context: "Tecnología espacial",
+[1S66] question: "NASA <span class='blank'></span> space missions with precision planning.",
+[1S67] options: ["execute", "executes", "executing", "executed"],
+[1S68] correct: 1,
+[1S69] feedback: "¡Perfecto! 'NASA executes' es correcto. NASA es una organización singular."
+[1S70] },
+[1S71] {
+[1S72] emoji: "💎",
+[1S73] context: "Gemología y joyería",
+[1S74] question: "Expert gemologists <span class='blank'></span> precious stones accurately.",
+[1S75] options: ["appraise", "appraises", "appraising", "appraised"],
+[1S76] correct: 0,
+[1S77] feedback: "¡Muy bien! 'Expert gemologists appraise' es correcto. Es plural, usa la forma base."
+[1S78] },
+[1S79] {
+[1S80] emoji: "🖼️",
+[1S81] context: "Curación de arte",
+[1S82] question: "The curator <span class='blank'></span> exhibitions for contemporary art.",
+[1S83] options: ["organize", "organizes", "organizing", "organized"],
+[1S84] correct: 1,
+[1S85] feedback: "¡Genial! 'The curator organizes' es correcto. Describe su función profesional habitual."
+[1S86] },
+[1S87] {
+[1S88] emoji: "🧪",
+[1S89] context: "Química analítica",
+[1S90] question: "Laboratory technicians <span class='blank'></span> samples for contamination.",
+[1S91] options: ["test", "tests", "testing", "tested"],
+[1S92] correct: 0,
+[1S93] feedback: "¡Excelente! 'Laboratory technicians test' es correcto. Es plural, usa la forma base."
+[1S94] },
+[1S95] {
+[1S96] emoji: "📡",
+[1S97] context: "Telecomunicaciones",
+[1S98] question: "The engineer <span class='blank'></span> satellite communication systems.",
+[1S99] options: ["maintain", "maintains", "maintaining", "maintained"],
+[1S00] correct: 1,
+[1S01] feedback: "¡Perfecto! 'The engineer maintains' es correcto. Describe su responsabilidad técnica."
+[1S02] },
+[1S03] {
+[1S04] emoji: "🩺",
+[1S05] context: "Medicina especializada",
+[1S06] question: "Surgeons <span class='blank'></span> complex procedures with expertise.",
+[1S07] options: ["perform", "performs", "performing", "performed"],
+[1S08] correct: 0,
+[1S09] feedback: "¡Muy bien! 'Surgeons perform' es correcto. 'Surgeons' es plural, usa la forma base."
+[1S10] },
+[1S11] {
+[1S12] emoji: "🤝",
+[1S13] context: "Diplomacia internacional",
+[1S14] question: "The ambassador <span class='blank'></span> international relations skillfully.",
+[1S15] options: ["manage", "manages", "managing", "managed"],
+[1S16] correct: 1,
+[1S17] feedback: "¡Genial! 'The ambassador manages' es correcto. Describe su función diplomática habitual."
+[1S18] },
+[1S19] {
+[1S20] emoji: "📊",
+[1S21] context: "Estrategia empresarial",
+[1S22] question: "Strategic planners <span class='blank'></span> long-term business objectives.",
+[1S23] options: ["formulate", "formulates", "formulating", "formulated"],
+[1S24] correct: 0,
+[1S25] feedback: "¡Excelente! 'Strategic planners formulate' es correcto. Es plural, usa la forma base."
+[1S26] },
+[1S27] {
+[1S28] emoji: "🛡️",
+[1S29] context: "Ciberseguridad",
+[1S30] question: "The security analyst <span class='blank'></span> network vulnerabilities daily.",
+[1S31] options: ["monitor", "monitors", "monitoring", "monitored"],
+[1S32] correct: 1,
+[1S33] feedback: "¡Perfecto! 'The security analyst monitors' es correcto. 'Daily' indica rutina habitual."
+[1S34] },
+[1S35] {
+[1S36] emoji: "📋",
+[1S37] context: "Gestión de eventos",
+[1S38] question: "Event coordinators <span class='blank'></span> multiple projects simultaneously.",
+[1S39] options: ["handle", "handles", "handling", "handled"],
+[1S40] correct: 0,
+[1S41] feedback: "¡Muy bien! 'Event coordinators handle' es correcto. Es plural, usa la forma base."
+[1S42] },
+[1S43] {
+[1S44] emoji: "🌾",
+[1S45] context: "Agricultura sostenible",
+[1S46] question: "The agronomist <span class='blank'></span> crop rotation for soil health.",
+[1S47] options: ["implement", "implements", "implementing", "implemented"],
+[1S48] correct: 1,
+[1S49] feedback: "¡Genial! 'The agronomist implements' es correcto. Describe su práctica profesional."
+[1S50] },
+[1S51] {
+[1S52] emoji: "✍️",
+[1S53] context: "Investigación académica",
+[1S54] question: "University professors <span class='blank'></span> groundbreaking research annually.",
+[1aS55] options: ["publish", "publishes", "publishing", "published"],
+[1aS56] correct: 0,
+[1aS57] feedback: "¡Excelente! 'University professors publish' es correcto. Es plural, usa la forma base."
+[1aS58] },
+[1aS59] {
+[1aS60] emoji: "🎬",
+[1aS61] context: "Producción cinematográfica",
+[1aS62] question: "The director <span class='blank'></span> creative vision into compelling films.",
+[1aS63] options: ["transform", "transforms", "transforming", "transformed"],
+[1aS64] correct: 1,
+[1aS65] feedback: "¡Perfecto! 'The director transforms' es correcto. Describe su proceso creativo habitual."
+[1aS66] },
+[1aS67] {
+[1aS68] emoji: "💡",
+[1aS69] context: "Ingeniería eléctrica",
+[1aS70] question: "Electrical engineers <span class='blank'></span> power distribution systems.",
+[1aS71] options: ["design", "designs", "designing", "designed"],
+[1aS72] correct: 0,
+[1aS73] feedback: "¡Muy bien! 'Electrical engineers design' es correcto. Es plural, usa la forma base."
+[1aS74] },
+[1aS75] {
+[1aS76] emoji: "📜",
+[1aS77] context: "Preservación histórica",
+[1aS78] question: "The historian <span class='blank'></span> ancient artifacts for future generations.",
+[1aS79] options: ["preserve", "preserves", "preserving", "preserved"],
+[1aS80] correct: 1,
+[1aS81] feedback: "¡Genial! 'The historian preserves' es correcto. Describe su misión de conservación."
+[1aS82] },
+[1aS83] {
+[1aS84] emoji: "🐳",
+[1aS85] context: "Oceanografía",
+[1aS86] question: "Oceanographers <span class='blank'></span> deep-sea phenomena extensively.",
+[1aS87] options: ["research", "researches", "researching", "researched"],
+[1aS88] correct: 0,
+[1aS89] feedback: "¡Excelente! 'Oceanographers research' es correcto. Es plural, usa la forma base."
+[1aS90] },
+[1aS91] {
+[1aS92] emoji: "❤️‍🩹",
+[1aS93] context: "Terapia artística",
+[1aS94] question: "The art therapist <span class='blank'></span> healing through creative expression.",
+[1aS95] options: ["facilitate", "facilitates", "facilitating", "facilitated"],
+[1aS96] correct: 1,
+[1aS97] feedback: "¡Perfecto! 'The art therapist facilitates' es correcto. Describe su método terapéutico."
+[1aS98] }
+[1aS99] ]
+[2b00] };
+[2b01] 
+[2b02] // --- VARIABLES GLOBALES DEL JUEGO ---
+[2b03] 
+[2b04] let currentLevel = '';
+[2b05] let currentQuestions = [];
+[2b06] let currentQuestionIndex = 0;
+[2b07] let score = 0;
+[2b08] let gameStartTime = 0;
+[2b09] let suddenModeTimer = null;
+[2b10] let gameTimerInterval = null; // Para el temporizador principal
+[2b11] let suddenTimeLeft = 60;
+[2b12] let gameData = []; // Almacén de datos local
+[2b13] const STORAGE_KEY = 'wordQuestData'; // Clave para localStorage
+[2b14] 
+[2b15] // --- INICIALIZACIÓN ---
+[2b16] 
+[2b17] function loadGameData() {
+[2b18] try {
+[2b19] const data = localStorage.getItem(STORAGE_KEY);
+[2b20] if (data) {
+[2b21] gameData = JSON.parse(data);
+[2b22] } else {
+[2b23] gameData = [];
+[2b24] }
+[2b25] } catch (error) {
+[2b26] console.error('Error loading data from localStorage:', error);
+[2b27] gameData = [];
+[2b28] }
+[2b29] updateHistoryDisplay();
+[2b30] updateRankingDisplay();
+[2b31] }
+[2b32] 
+[2b33] function persistGameData() {
+[2b34] try {
+[2b35] localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
+[2b36] } catch (error) {
+[2b37] console.error('Error saving data to localStorage:', error);
+[2b38] }
+[2b39] // Actualizar vistas después de guardar
+[2b40] updateHistoryDisplay();
+[2b41] updateRankingDisplay();
+[2b42] }
+[2b43] 
+[2b44] function initializeApp() {
+[2b45] // Cargar datos guardados
+[2b46] loadGameData();
+[2b47] 
+[2b48] // Configurar textos desde defaultConfig (reemplazando elementSdk)
+[2b49] document.getElementById('gameTitle').textContent = defaultConfig.game_title;
+[2b50] document.getElementById('easyLabel').textContent = defaultConfig.easy_label;
+[2b51] document.getElementById('mediumLabel').textContent = defaultConfig.medium_label;
+[2b52] document.getElementById('hardLabel').textContent = defaultConfig.hard_label;
+[2b53] 
+[2b54] // No se necesita 'elementSdk.init' ni 'dataSdk.init'
+[2b55] console.log("WordQuest App Inicializada (Modo Standalone)");
+[2b56] }
+[2b57] 
+[2b58] // --- FUNCIONES DEL JUEGO ---
+[2b59] 
+[2b60] function startGame(level) {
+[2b61] currentLevel = level;
+[2b62] // Copia y baraja las preguntas
+[2b63] currentQuestions = [...questions[level]].sort(() => Math.random() - 0.5);
+[2b64] currentQuestionIndex = 0;
+[2b65] score = 0;
+[2b66] gameStartTime = Date.now();
+[2b67] 
+[2b68] document.getElementById('menuScreen').style.display = 'none';
+[2b69] document.getElementById('gameScreen').style.display = 'block';
+[2b70] document.getElementById('timerDisplay').style.display = 'block';
+[2b71] 
+[2b72] updateProgress();
+[2b73] showQuestion();
+[2b74] startGameTimer();
+[2b75] }
+[2b76] 
+[2b77] function startSuddenMode() {
+[2b78] currentLevel = 'sudden';
+[2b79] currentQuestions = [...questions.hard].sort(() => Math.random() - 0.5);
+[2b80] currentQuestionIndex = 0;
+[2b81] score = 0;
+[2b82] gameStartTime = Date.now();
+[2b83] suddenTimeLeft = 60;
+[2b84] 
+[2b85] document.getElementById('menuScreen').style.display = 'none';
+[2b86] document.getElementById('gameScreen').style.display = 'block';
+[2b87] document.getElementById('timerDisplay').style.display = 'block';
+[2b88] document.getElementById('suddenTimer').style.display = 'block';
+[2b89] document.getElementById('suddenTimer').textContent = suddenTimeLeft;
+[2b90] document.getElementById('suddenTimer').classList.remove('warning');
+[2b91] 
+[2b92] updateProgress();
+[2b93] showQuestion();
+[2b94] startGameTimer();
+[2b95] startSuddenTimer();
+[2b96] }
+[2b97] 
+[2b98] function startSuddenTimer() {
+[2b99] if (suddenModeTimer) {
+[3c00] clearInterval(suddenModeTimer);
+[3c01] }
+[3c02] const timerElement = document.getElementById('suddenTimer');
+[3c03] suddenModeTimer = setInterval(() => {
+[3c04] suddenTimeLeft--;
+[3c05] timerElement.textContent = suddenTimeLeft;
+[3c06] 
+[3c07] if (suddenTimeLeft <= 10) {
+[3c08] timerElement.classList.add('warning');
+[3c09] }
+[3c10] 
+[3c11] if (suddenTimeLeft <= 0) {
+[3c12] clearInterval(suddenModeTimer);
+[3c13] endGame();
+[3c14] }
+[3c15] }, 1000);
+[3c16] }
+[3c17] 
+[3c18] function updateProgress() {
+[3c19] const total = currentLevel === 'easy' ? 10 : currentLevel === 'medium' ? 20 : 30;
+[3c20] const current = currentQuestionIndex;
+[3c21] const progressFill = document.getElementById('progressFill');
+[3c22] const percentage = (current / total) * 100;
+[3c23] 
+[3c24] progressFill.style.width = percentage + '%';
+[3c25] progressFill.textContent = `${current}/${total}`;
+[3c26] }
+[3c27] 
+[3c28] function showQuestion() {
+[3c29] const totalQuestions = currentLevel === 'easy' ? 10 : currentLevel === 'medium' ? 20 : 30;
+[3c30] 
+[3c31] if (currentQuestionIndex >= totalQuestions) {
+[3c32] endGame();
+[3c33] return;
+[3c34] }
+[3c35] 
+[3c36] const question = currentQuestions[currentQuestionIndex];
+[3c37] 
+[3c38] document.getElementById('questionEmoji').textContent = question.emoji;
+[3c39] document.getElementById('questionContext').textContent = question.context;
+[3c40] document.getElementById('questionText').innerHTML = question.question;
+[3c41] 
+[3c42] const optionsArea = document.getElementById('optionsArea');
+[3c43] optionsArea.innerHTML = "";
+[3c44] 
+[3c45] question.options.forEach((option, index) => {
+[3c46] const button = document.createElement('button');
+[3c47] button.className = 'option-btn';
+[3c48] button.textContent = option;
+[3c49] button.onclick = () => selectAnswer(index);
+[3c50] optionsArea.appendChild(button);
+[3c51] });
+[3c52] 
+[3c53] document.getElementById('feedback').style.display = 'none';
+[3c54] }
+[3c55] 
+[3c56] function selectAnswer(selectedIndex) {
+[3c57] const question = currentQuestions[currentQuestionIndex];
+[3c58] const options = document.querySelectorAll('.option-btn');
+[3c59] const feedback = document.getElementById('feedback');
+[3c60] 
+[3c61] options.forEach(btn => btn.disabled = true);
+[3c62] 
+[3c63] options[question.correct].classList.add('correct');
+[3c64] if (selectedIndex !== question.correct) {
+[3c65] options[selectedIndex].classList.add('incorrect');
+[3c66] }
+[3c67] 
+[3c68] feedback.style.display = 'block';
+[3c69] 
+[3c70] if (selectedIndex === question.correct) {
+[3c71] score++;
+[3c72] feedback.className = 'feedback correct';
+[3c73] feedback.innerHTML = question.feedback;
+[3c74] } else {
+[3c75] feedback.className = 'feedback incorrect';
+[3c76] feedback.innerHTML = `Incorrecto. ${question.feedback}`;
+[3c77] }
+[3c78] 
+[3c79] setTimeout(() => {
+[3c80] currentQuestionIndex++;
+[3c81] updateProgress();
+[3c82] showQuestion();
+[3c83] }, 3000);
+[3c84] }
+[3c85] 
+[3c86] function startGameTimer() {
+[3c87] // Limpiar temporizador anterior si existe
+[3c88] if (gameTimerInterval) {
+[3c89] clearInterval(gameTimerInterval);
+[3c90] }
+[3c91] 
+[3c92] const timerElement = document.getElementById('gameTimer');
+[3c93] timerElement.textContent = '00:00'; // Reiniciar visualmente
+[3c94] 
+[3c95] gameTimerInterval = setInterval(() => {
+[3c96] const elapsed = Date.now() - gameStartTime;
+[3c97] const minutes = Math.floor(elapsed / 60000);
+[3c98] const seconds = Math.floor((elapsed % 60000) / 1000);
+[3c99] timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+[4a00] }, 1000);
+[4a01] }
+[4a02] 
+[4a03] function endGame() {
+[4a04] // Detener temporizadores
+[4a05] if (suddenModeTimer) {
+[4a06] clearInterval(suddenModeTimer);
+[4a07] }
+[4a08] if (gameTimerInterval) {
+[4a09] clearInterval(gameTimerInterval);
+[4a10] }
+[4a11] 
+[4a12] const gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
+[4a13] const total = currentLevel === 'easy' ? 10 : currentLevel === 'medium' ? 20 : 30;
+[4a14] const percentage = Math.round((score / total) * 100);
+[4a15] 
+[4a16] document.getElementById('gameScreen').style.display = 'none';
+[4a17] document.getElementById('timerDisplay').style.display = 'none';
+[4a18] document.getElementById('suddenTimer').style.display = 'none';
+[4a19] 
+[4a20] document.getElementById('resultsScreen').style.display = 'block';
+[4a21] document.getElementById('finalScore').textContent = `${score}/${total}`;
+[4a22] 
+[4a23] let medal, medalClass, message;
+[4a24] 
+[4a25] if (currentLevel === 'sudden' && suddenTimeLeft > 0 && percentage === 100) {
+[4a26] medal = '🏆';
+[4a27] medalClass = 'gold';
+[4a28] message = '¡Leyenda! ¡Completaste Muerte Súbita perfectamente!';
+[4a29] } else if (percentage >= 90) {
+[4a30] medal = '🥇';
+[4a31] medalClass = 'gold';
+[4a32] message = '¡Increíble! Eres un verdadero maestro del inglés.';
+[4a33] } else if (percentage >= 70) {
+[4a34] medal = '🥈';
+[4a35] medalClass = 'silver';
+[4a36] message = '¡Muy bien! Tienes un excelente dominio del inglés.';
+[4a37] } else if (percentage >= 50) {
+[4a38] medal = '🥉';
+[4a39] medalClass = 'bronze';
+[4a40] message = '¡Buen trabajo! Sigues mejorando tu inglés.';
+[4a41] } else {
+[4a42] medal = '📖';
+[4a43] medalClass = 'gray';
+[4a44] message = 'Sigue practicando. ¡Cada intento te hace mejor!';
+[4a45] }
+[4a46] 
+[4a47] document.getElementById('medalIcon').textContent = medal;
+[4a48] document.getElementById('medalIcon').className = `medal-icon ${medalClass}`;
+[4a49] document.getElementById('medalText').textContent = `${percentage}% Correcto`;
+[4a50] document.getElementById('medalText').className = `medal-text ${medalClass}`;
+[4a51] document.getElementById('resultMessage').textContent = message;
+[4a52] 
+[4a53] // Guardar resultado antes de pedir nombre
+[4a54] saveGameResult(score, total, gameTime, percentage);
+[4a55] 
+[4a56] if (percentage >= 50) {
+[4a57] const nameSection = document.getElementById('nameInputSection');
+[4a58] nameSection.style.display = 'block';
+[4a59] nameSection.className = `name-input-section ${medalClass}`;
+[4a60] document.getElementById('playerNameInput').value = ''; // Limpiar input
+[4a61] } else {
+[4a62] document.getElementById('nameInputSection').style.display = 'none';
+[4a63] }
+[4a64] }
+[4a65] 
+[4a66] // --- FUNCIONES DE DATOS (localStorage) ---
+[4a67] 
+[4a68] function saveGameResult(score, total, gameTime, percentage) {
+[4a69] const gameResult = {
+[4a70] id: Date.now().toString(),
+[4a71] level: currentLevel,
+[4a72] score: score,
+[4a73] total: total,
+[4a74] percentage: percentage,
+[4a75] timestamp: new Date().toISOString(),
+[4a76] player_name: "", // Se actualizará después
+[4a77] game_time: gameTime
+[4a78] };
+[4a79] 
+[4a80] gameData.push(gameResult);
+[4a81] persistGameData();
+[4a82] }
+[4a83] 
+[4a84] function savePlayerName() {
+[4a85] const nameInput = document.getElementById('playerNameInput');
+[4a86] const playerName = nameInput.value.trim();
+[4a87] 
+[4a88] if (!playerName || gameData.length === 0) {
+[4a89] return;
+[4a90] }
+[4a91] 
+[4a92] // Encontrar el último resultado (que acabamos de guardar) y actualizarlo
+[4a93] const lastResult = gameData[gameData.length - 1];
+[4a94] if (lastResult && lastResult.player_name === "") {
+[4a95] lastResult.player_name = playerName;
+[4a96] persistGameData(); // Guardar el cambio
+[4a97] 
+[4a98] // Ocultar input después de guardar
+[4a99] document.getElementById('nameInputSection').style.display = 'none';
+[5a00] nameInput.value = "";
+[5a01] }
+[5a02] }
+[5a03] 
+[5a04] function updateHistoryDisplay() {
+[5a05] const historyList = document.getElementById('historyList');
+[5a06] 
+[5a07] if (gameData.length === 0) {
+[5a08] historyList.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No hay partidas registradas aún. ¡Juega tu primera partida!</p>';
+[5a09] return;
+[5a10] }
+[5a11] 
+[5a12] const sortedData = [...gameData].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+[5a13] 
+[5a14] historyList.innerHTML = sortedData.map(game => {
+[5a15] const date = new Date(game.timestamp).toLocaleDateString();
+[5a16] const time = Math.floor(game.game_time / 60) + ':' + (game.game_time % 60).toString().padStart(2, '0');
+[5a17] 
+[5a18] let levelName = "";
+[5a19] switch(game.level) {
+[5a20] case 'easy': levelName = 'Explorador'; break;
+[5a21] case 'medium': levelName = 'Aventurero'; break;
+[5a22] case 'hard': levelName = 'Maestro'; break;
+[5a23] case 'sudden': levelName = 'Muerte Súbita'; break;
+[5a24] }
+[5a25] 
+[5a26] return `
+[5a27] <div class="history-item">
+[5a28] <div>
+[5a29] <strong>${levelName}</strong><br>
+[5a30] <small>${date} - ${time}</small>
+[5a31] </div>
+[5a32] <div style="text-align: right;">
+[5a33] <strong>${game.score}/${game.total}</strong><br>
+[5a34] <small>${game.percentage}%</small>
+[5a35] </div>
+[5a36] </div>
+[5a37] `;
+[5a38] }).join("");
+[5a39] }
+[5a40] 
+[5a41] function updateRankingDisplay() {
+[5a42] const rankingList = document.getElementById('rankingList');
+[5a43] const playersWithNames = gameData.filter(game => game.player_name);
+[5a44] 
+[5a45] if (playersWithNames.length === 0) {
+[5a46] rankingList.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No hay jugadores en el ranking aún. ¡Sé el primero en aparecer!</p>';
+[5a47] return;
+[5a48] }
+[5a49] 
+[5a50] // Agrupar por jugador y calcular mejor puntaje
+[5a51] const playerStats = {};
+[5a52] playersWithNames.forEach(game => {
+[5a53] const percentage = game.percentage;
+[5a54] if (!playerStats[game.player_name] || percentage > playerStats[game.player_name].percentage) {
+[5a55] playerStats[game.player_name] = {
+[5a56] name: game.player_name,
+[5a57] percentage: percentage,
+[5a58] score: game.score,
+[5a59] total: game.total,
+[5a60] level: game.level
+[5a61] };
+[5a62] }
+[5a63] });
+[5a64] 
+[5a65] // Ordenar por porcentaje
+[5a66] const sortedPlayers = Object.values(playerStats).sort((a, b) => b.percentage - a.percentage);
+[5a67] 
+[5a68] rankingList.innerHTML = sortedPlayers.map((player, index) => {
+[5a69] let medal = "";
+[5a70] let rankClass = "";
+[5a71] if (index === 0) {
+[5a72] medal = '🥇';
+[5a73] rankClass = 'gold';
+[5a74] } else if (index === 1) {
+[5a75] medal = '🥈';
+[5a76] rankClass = 'silver';
+[5a77] } else if (index === 2) {
+[5a78] medal = '🥉';
+[5IA79] rankClass = 'bronze';
+[5IA80] }
+[5IA81] 
+[5IA82] let levelName = "";
+[5IA83] switch(player.level) {
+[5IA84] case 'easy': levelName = 'Explorador'; break;
+[5IA85] case 'medium': levelName = 'Aventurero'; break;
+[5IA86] case 'hard': levelName = 'Maestro'; break;
+[5IA87] case 'sudden': levelName = 'Muerte Súbita'; break;
+[5IA88] }
+[5IA89] 
+[5IA90] return `
+[5IA91] <div class="ranking-item ${rankClass}">
+[5IA92] <div>
+[5IA93] <span class="medal">${medal}</span>
+[5IA94] <span class="player-name">${player.name}</span><br>
+[5IA95] <small>${levelName}</small>
+[5IA96] </div>
+[5IA97] <div style="text-align: right;">
+[5IA98] <strong>${player.score}/${player.total}</strong><br>
+[5IA99] <small>${player.percentage}%</small>
+[6b00] </div>
+[6b01] </div>
+[6b02] `;
+[6b03] }).join("");
+[6b04] }
+[6b05] 
+[6b06] // --- NAVEGACIÓN Y OTROS ---
+[6b07] 
+[6b08] function showTab(tabName, event) {
+[6b09] document.querySelectorAll('.tab-content').forEach(tab => {
+[6b10] tab.classList.remove('active');
+[6b11] });
+[6b12] document.querySelectorAll('.tab-btn').forEach(btn => {
+[6b13] btn.classList.remove('active');
+[6b14] });
+[6b15] 
+[6b16] document.getElementById(tabName + 'Tab').classList.add('active');
+[6b17] event.target.classList.add('active');
+[6b18] }
+[6b19] 
+[6b20] function showDictionary() {
+[6b21] document.getElementById('menuScreen').style.display = 'none';
+[6b22] document.getElementById('dictionaryScreen').style.display = 'block';
+[6b23] showDictionaryLevel('easy'); // Mostrar nivel fácil por defecto
+[6b24] }
+[6b25] 
+[6b26] function showDictionaryLevel(level) {
+[6b27] document.querySelectorAll('#dictionaryScreen .tab-btn').forEach(btn => {
+[6b28] btn.classList.remove('active');
+[6b29] });
+[6b30] document.getElementById('dict' + level.charAt(0).toUpperCase() + level.slice(1) + 'Btn').classList.add('active');
+[6b31] 
+[6b32] const content = document.getElementById('dictionaryContent');
+[6b33] const levelQuestions = questions[level];
+[6b34] const words = new Set();
+[6b35] 
+[6S36] levelQuestions.forEach(q => {
+[6S37] q.options.forEach(option => {
+[6S38] if (translations[option]) {
+[6S39] words.add(option);
+[6S40] }
+[6S41] });
+[6S42] // También agregar la respuesta correcta por si acaso
+[6S43] const correctWord = q.options[q.correct];
+[6S44] if (translations[correctWord]) {
+[6S45] words.add(correctWord);
+[6S46] }
+[6S47] });
+[6S48] 
+[6S49] const sortedWords = Array.from(words).sort();
+[6S50] 
+[6S51] if (sortedWords.length === 0) {
+[6S52] content.innerHTML = '<p style="text-align: center; color: #666;">No hay palabras en el diccionario para este nivel.</p>';
+[6S53] return;
+[6S54] }
+[6S55] 
+[6S56] content.innerHTML = sortedWords.map(word =>
+[6S57] `
+[6S58] <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+[6S59] <span class="word-tooltip" style="font-weight: 600; color: #667eea; cursor: help;">
+[6S60] ${word}
+[6S61] <div class="tooltip-content">${translations[word]}</div>
+[6S62] </span>
+[6S63] <span style="color: #666;">${translations[word]}</span>
+[6S64] </div>
+[6S65] `
+[6S66] ).join("");
+[6S67] }
+[6S68] 
+[6S69] function backToMenuFromDictionary() {
+[6S70] document.getElementById('dictionaryScreen').style.display = 'none';
+[6S71] document.getElementById('menuScreen').style.display = 'block';
+[6S72] }
+[6S73] 
+[6S74] function showExitConfirmation() {
+[6S75] document.getElementById('exitModal').style.display = 'flex';
+[6S76] }
+[6S77] 
+[6S78] function confirmExit() {
+[6S79] // Detener todos los temporizadores
+[6S80] if (suddenModeTimer) {
+[6S81] clearInterval(suddenModeTimer);
+[6S82] }
+[6S83] if (gameTimerInterval) {
+[6S84] clearInterval(gameTimerInterval);
+[6S85] }
+[6S86] 
+[6S87] document.getElementById('exitModal').style.display = 'none';
+[6S88] document.getElementById('gameScreen').style.display = 'none';
+[6S89] document.getElementById('timerDisplay').style.display = 'none';
+[6S90] document.getElementById('suddenTimer').style.display = 'none';
+[6S91] document.getElementById('menuScreen').style.display = 'block';
+[6S92] }
+[6S93] 
+[6S94] function cancelExit() {
+[6S95] document.getElementById('exitModal').style.display = 'none';
+[6S96] }
+[6S97] 
+[6S98] function backToMenu() {
+[6S99] document.getElementById('resultsScreen').style.display = 'none';
+[7a00] document.getElementById('nameInputSection').style.display = 'none'; // Ocultar por si acaso
+[7a01] document.getElementById('menuScreen').style.display = 'block';
+[7a02] }
+[7a03] 
+[7a04] // Inicializar cuando la página cargue
+[7a05] document.addEventListener('DOMContentLoaded', initializeApp);
+[7a06] 
+[7a07] </script>
+[7a08] </body>
+[7a09] </html>
