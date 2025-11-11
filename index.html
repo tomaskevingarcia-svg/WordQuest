@@ -1,0 +1,1987 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordQuest</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0; /* Añadido para mejor visualización en móvil */
+        }
+        html {
+            height: 100%;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+        }
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .logo-title {
+            font-size: 4em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            letter-spacing: -2px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .logo-subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin: 10px 0 0 0;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        .floating-elements {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2em;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .level-btn {
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            font-size: 1.4em;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 600;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .level-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .level-btn:hover::before {
+            left: 100%;
+        }
+        .easy-btn {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+        .easy-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(132, 250, 176, 0.4);
+        }
+        .medium-btn {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        .medium-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(252, 182, 159, 0.4);
+        }
+        .hard-btn {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+        .hard-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(255, 154, 158, 0.4);
+        }
+        .sudden-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            animation: suddenPulse 2s ease-in-out infinite;
+        }
+        .sudden-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+            animation: none;
+        }
+        @keyframes suddenPulse {
+            0%, 100% { box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3); }
+            50% { box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5); }
+        }
+        .game-screen {
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 35px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .question-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+            position: relative;
+        }
+        .question-visual {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .question-emoji {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: block;
+            animation: questionPulse 2s ease-in-out infinite;
+        }
+        @keyframes questionPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .question-context {
+            font-size: 1.1em;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: center;
+            font-weight: 500;
+        }
+        .blank {
+            display: inline-block;
+            min-width: 180px;
+            border-bottom: 4px solid #667eea;
+            padding: 5px 15px;
+            margin: 0 8px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 8px 8px 0 0;
+            animation: blankGlow 2s ease-in-out infinite;
+        }
+        @keyframes blankGlow {
+            0%, 100% { box-shadow: 0 0 0 rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+        }
+        .options-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .option-btn {
+            padding: 18px 25px;
+            font-size: 1.3em;
+            background: #ffffff;
+            color: #333;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .option-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            transform: none;
+        }
+        .option-btn.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+            color: #155724;
+            animation: correctPulse 0.6s ease-out;
+        }
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-color: #dc3545;
+            color: #721c24;
+            animation: incorrectShake 0.6s ease-out;
+        }
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .word-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 2px dotted #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+        .word-tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(-10px);
+        }
+        .tooltip-content {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 60000;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            min-width: 100px;
+            text-align: center;
+            pointer-events: none;
+            border: 2px solid #667eea;
+            transform: translateY(-10px);
+        }
+        .tooltip-content::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid transparent;
+            border-top-color: #333;
+        }
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+            animation: feedbackSlide 0.5s ease-out;
+        }
+        @keyframes feedbackSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .feedback.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 3px solid #28a745;
+        }
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 3px solid #dc3545;
+        }
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 30px 0;
+            font-weight: 800;
+        }
+        .back-btn {
+            padding: 18px 45px;
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-top: 25px;
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+        .back-btn:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(108, 117, 125, 0.4);
+        }
+        .history-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #f0f0f0;
+        }
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px 25px;
+            font-size: 1.2em;
+            background: #ffffff;
+            color: #666;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .tab-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            color: #667eea;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #5568d3;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .medal {
+            font-size: 1.8em;
+            margin-right: 12px;
+        }
+        .ranking-item, .history-item {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid transparent;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .ranking-item:hover, .history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .ranking-item.gold {
+            border-left-color: #ffd700;
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+        }
+        .ranking-item.silver {
+            border-left-color: #c0c0c0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        .ranking-item.bronze {
+            border-left-color: #cd7f32;
+            background: linear-gradient(135deg, #fdf2e9 0%, #f4e4d1 100%);
+        }
+        .medal-display {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .medal-icon {
+            font-size: 6em;
+            margin-bottom: 25px;
+            display: block;
+            animation: medalBounce 1.2s ease-out;
+        }
+        .medal-icon.gray {
+            filter: grayscale(100%);
+            opacity: 0.4;
+        }
+        @keyframes medalBounce {
+            0% { transform: scale(0) rotate(180deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .medal-text {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .medal-text.gold {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .medal-text.silver {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .medal-text.bronze {
+            background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .medal-text.gray { color: #999; }
+        .name-input-section {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 20px;
+            margin: 35px 0;
+            border: 4px solid #e9ecef;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .name-input-section.gold { border-color: #ffd700; }
+        .name-input-section.silver { border-color: #c0c0c0; }
+        .name-input-section.bronze { border-color: #cd7f32; }
+        .name-input {
+            width: 100%;
+            /* Corrección para box-sizing */
+            box-sizing: border-box; 
+            padding: 18px;
+            font-size: 1.3em;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .name-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+        .save-name-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        .save-name-btn:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a4c93 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .save-name-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .player-name {
+            font-weight: 700;
+            color: #333;
+        }
+        .dictionary-content {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        .dictionary-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .dictionary-content::-webkit-scrollbar-track {
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+        .dictionary-content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        .exit-btn:hover {
+            background: #c82333 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+        }
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 1000;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            display: none;
+        }
+        .countdown-timer {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #ff6b6b;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .countdown-timer.warning {
+            animation: timerWarning 1s ease-in-out infinite;
+        }
+        @keyframes timerWarning {
+            0%, 100% { color: #ff6b6b; transform: scale(1); }
+            50% { color: #dc3545; transform: scale(1.05); }
+        }
+        
+        /* Media Queries para Responsividad */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 0; /* Menos padding en móviles */
+            }
+            .container {
+                padding: 25px;
+                width: 95%;
+            }
+            .logo-title {
+                font-size: 3em;
+            }
+            .options-area {
+                grid-template-columns: 1fr;
+            }
+            .question-text {
+                font-size: 1.4em;
+            }
+            .level-btn {
+                padding: 20px;
+                font-size: 1.2em;
+            }
+            .tab-btn {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+            .question-card {
+                padding: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .logo-title {
+                font-size: 2.5em;
+            }
+            .question-text {
+                font-size: 1.2em;
+            }
+             .blank {
+                min-width: 120px;
+                margin: 0 5px;
+                padding: 2px 10px;
+            }
+            .option-btn {
+                padding: 15px;
+                font-size: 1.1em;
+            }
+            .timer-display {
+                top: 10px;
+                left: 10px;
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+        }
+    </style>
+    
+    </head>
+<body>
+
+    <div class="timer-display" id="timerDisplay">
+        <span id="gameTimer">00:00</span>
+    </div>
+
+    <div class="container">
+
+        <div id="menuScreen" class="menu-screen">
+            <div class="floating-elements">🚀</div>
+            
+            <div class="logo-section">
+                <h1 class="logo-title" id="gameTitle">WordQuest</h1>
+                <p class="logo-subtitle">Aventura de Aprendizaje en Inglés</p>
+            </div>
+
+            <div class="menu">
+                <button class="level-btn easy-btn" onclick="startGame('easy')">
+                    <span id="easyLabel">Explorador</span> - 10 frases básicas
+                </button>
+                <button class="level-btn medium-btn" onclick="startGame('medium')">
+                    <span id="mediumLabel">Aventurero</span> - 20 frases intermedias
+                </button>
+                <button class="level-btn hard-btn" onclick="startGame('hard')">
+                    <span id="hardLabel">Maestro</span> - 30 frases avanzadas
+                </button>
+                <button class="level-btn sudden-btn" onclick="startSuddenMode()" style="margin-top: 20px;">
+                    Muerte Súbita - 30 frases contra el reloj
+                </button>
+                <button class="level-btn" onclick="showDictionary()" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); margin-top: 10px;">
+                    Diccionario de Palabras - Practica vocabulario
+                </button>
+            </div>
+
+            <div class="history-section">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('history', event)">Historial</button>
+                    <button class="tab-btn" onclick="showTab('ranking', event)">Ranking</button>
+                </div>
+                <div id="historyTab" class="tab-content active">
+                    <div id="historyList">
+                        </div>
+                </div>
+                <div id="rankingTab" class="tab-content">
+                    <div id="rankingList">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameScreen" class="game-screen">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="progress-bar" style="flex: 1; margin-right: 20px;">
+                    <div id="progressFill" class="progress-fill">0/0</div>
+                </div>
+                <button class="exit-btn" onclick="showExitConfirmation()" style="padding: 12px 20px; background: #dc3545; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                    Salir
+                </button>
+            </div>
+
+            <div id="suddenTimer" class="countdown-timer" style="display: none;">60</div>
+
+            <div class="question-card">
+                <div class="question-visual">
+                    <span class="question-emoji" id="questionEmoji"></span>
+                    <div class="question-context" id="questionContext">Completa la frase en inglés</div>
+                </div>
+                <div id="questionText" class="question-text">
+                    </div>
+                <div class="options-area" id="optionsArea">
+                    </div>
+                <div id="feedback" class="feedback">
+                    </div>
+            </div>
+        </div>
+
+        <div id="resultsScreen" class="results-screen">
+            <h1>¡Aventura Completada!</h1>
+            <div class="score-display" id="finalScore"></div>
+            <p id="resultMessage" style="font-size: 1.4em; color: #666;"></p>
+            
+            <div class="medal-display" id="medalDisplay">
+                <span class="medal-icon" id="medalIcon"></span>
+                <div class="medal-text" id="medalText"></div>
+            </div>
+
+            <div class="name-input-section" id="nameInputSection" style="display: none;">
+                <h3 style="margin-top: 0; color: #333;">¡Felicidades! Ingresa tu nombre para el ranking:</h3>
+                <input type="text" id="playerNameInput" class="name-input" placeholder="Escribe tu nombre aquí..." maxlength="20">
+                <button class="save-name-btn" id="saveNameBtn" onclick="savePlayerName()">Guardar en Ranking</button>
+            </div>
+
+            <button class="back-btn" onclick="backToMenu()">Volver al Menú</button>
+        </div>
+
+        <div id="dictionaryScreen" class="dictionary-screen" style="display: none;">
+            <h1 style="text-align: center; color: #667eea; margin-bottom: 30px;">Diccionario de Palabras</h1>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+                <button class="tab-btn active" onclick="showDictionaryLevel('easy')" id="dictEasyBtn">Explorador</button>
+                <button class="tab-btn" onclick="showDictionaryLevel('medium')" id="dictMediumBtn">Aventurero</button>
+                <button class="tab-btn" onclick="showDictionaryLevel('hard')" id="dictHardBtn">Maestro</button>
+            </div>
+
+            <div id="dictionaryContent" class="dictionary-content">
+                </div>
+            
+            <button class="back-btn" onclick="backToMenuFromDictionary()" style="margin-top: 30px;">Volver al Menú</button>
+        </div>
+
+    </div> <div id="exitModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <h3 style="color: #333; margin-bottom: 20px;">¿Estás seguro?</h3>
+            <p style="color: #666; margin-bottom: 30px;">Si sales ahora, perderás el progreso actual del juego.</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button onclick="confirmExit()" style="padding: 12px 25px; background: #dc3545; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">Sí, salir</button>
+                <button onclick="cancelExit()" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        
+        // --- CONFIGURACIÓN Y DATOS ---
+
+        const defaultConfig = {
+            game_title: "WordQuest",
+            easy_label: "Explorador",
+            medium_label: "Aventurero",
+            hard_label: "Maestro"
+        };
+
+        // Diccionario de traducciones (Expandido)
+        const translations = {
+            'am': 'soy/estoy',
+            'is': 'es/está',
+            'are': 'son/están',
+            'was': 'era/estaba',
+            'were': 'eran/estaban',
+            'have': 'he/has',
+            'has': 'ha/tiene',
+            'had': 'había/tenía',
+            'will': 'será/estará',
+            'would': 'sería/estaría',
+            'can': 'puede/puedo',
+            'could': 'podría/pude',
+            'should': 'debería',
+            'must': 'debe/debo',
+            'might': 'podría/quizás',
+            'may': 'puede/tal vez',
+            'do': 'hacer',
+            'does': 'hace',
+            'did': 'hizo/hacía',
+            'like': 'gustar',
+            'likes': 'gusta',
+            'go': 'ir',
+            'goes': 'va',
+            'study': 'estudiar',
+            'studies': 'estudia',
+            'read': 'leer',
+            'reads': 'lee',
+            'drink': 'beber',
+            'drinks': 'bebe',
+            'eat': 'comer',
+            'eats': 'come',
+            'play': 'jugar',
+            'plays': 'juega',
+            'work': 'trabajar',
+            'works': 'trabaja',
+            'live': 'vivir',
+            'lives': 'vive',
+            'love': 'amar',
+            'loves': 'ama',
+            'want': 'querer',
+            'wants': 'quiere',
+            'need': 'necesitar',
+            'needs': 'necesita',
+            'know': 'saber/conocer',
+            'knows': 'sabe/conoce',
+            'think': 'pensar',
+            'thinks': 'piensa',
+            'feel': 'sentir',
+            'feels': 'siente',
+            'see': 'ver',
+            'sees': 've',
+            'hear': 'oir',
+            'hears': 'oye',
+            'speak': 'hablar',
+            'speaks': 'habla',
+            'write': 'escribir',
+            'writes': 'escribe',
+            'learn': 'aprender',
+            'learns': 'aprende',
+            'teach': 'enseñar',
+            'teaches': 'enseña',
+            'understand': 'entender',
+            'understands': 'entiende',
+            'remember': 'recordar',
+            'remembers': 'recuerda',
+            'forget': 'olvidar',
+            'forgets': 'olvida',
+            'help': 'ayudar',
+            'helps': 'ayuda',
+            'try': 'intentar',
+            'tries': 'intenta',
+            'find': 'encontrar',
+            'finds': 'encuentra',
+            'look': 'mirar',
+            'looks': 'mira',
+            'listen': 'escuchar',
+            'listens': 'escucha',
+            'watch': 'ver/observar',
+            'watches': 've/observa',
+            'wait': 'esperar',
+            'waits': 'espera',
+            'hope': 'esperar (deseo)',
+            'hopes': 'espera (deseo)',
+            'wake': 'despertar',
+            'wakes': 'despierta',
+            'run': 'correr',
+            'runs': 'corre',
+            'cook': 'cocinar',
+            'cooks': 'cocina',
+            'contact': 'contactar',
+            'contacts': 'contacta',
+            'drive': 'conducir',
+            'drives': 'conduce',
+            'buy': 'comprar',
+            'buys': 'compra',
+            'draw': 'dibujar',
+            'draws': 'dibuja',
+            'travel': 'viajar',
+            'travels': 'viaja',
+            'send': 'enviar',
+            'sends': 'envía',
+            'swim': 'nadar',
+            'swims': 'nada',
+            'organize': 'organizar',
+            'organizes': 'organiza',
+            'repair': 'reparar',
+            'repairs': 'repara',
+            'grow': 'crecer/cultivar',
+            'grows': 'crece/cultiva',
+            'sing': 'cantar',
+            'sings': 'canta',
+            'exercise': 'ejercitar',
+            'exercises': 'ejercita',
+            // Palabras del Nivel Difícil añadidas
+            'achieve': 'lograr',
+            'achieves': 'logra',
+            'analyze': 'analizar',
+            'analyzes': 'analiza',
+            'make': 'hacer',
+            'makes': 'hace',
+            'develop': 'desarrollar',
+            'develops': 'desarrolla',
+            'evaluate': 'evaluar',
+            'evaluates': 'evalúa',
+            'coordinate': 'coordinar',
+            'coordinates': 'coordina',
+            'portray': 'interpretar/retratar',
+            'portrays': 'interpreta/retrata',
+            'examine': 'examinar',
+            'examines': 'examina',
+            'decide': 'decidir',
+            'decides': 'decide',
+            'create': 'crear',
+            'creates': 'crea',
+            'sequence': 'secuenciar',
+            'sequences': 'secuencia',
+            'execute': 'ejecutar',
+            'executes': 'ejecuta',
+            'appraise': 'tasar/evaluar',
+            'appraises': 'tasa/evalúa',
+            'test': 'probar',
+            'tests': 'prueba',
+            'maintain': 'mantener',
+            'maintains': 'mantiene',
+            'perform': 'realizar',
+            'performs': 'realiza',
+            'manage': 'gestionar',
+            'manages': 'gestiona',
+            'formulate': 'formular',
+            'formulates': 'formula',
+            'monitor': 'monitorear',
+            'monitors': 'monitorea',
+            'handle': 'manejar',
+            'handles': 'maneja',
+            'implement': 'implementar',
+            'implements': 'implementa',
+            'publish': 'publicar',
+            'publishes': 'publica',
+            'transform': 'transformar',
+            'transforms': 'transforma',
+            'design': 'diseñar',
+            'designs': 'diseña',
+            'preserve': 'preservar',
+            'preserves': 'preserva',
+            'research': 'investigar',
+            'researches': 'investiga',
+            'facilitate': 'facilitar',
+            'facilitates': 'facilita'
+        };
+
+        // Preguntas por nivel (Corregidas - sin objetos vacíos)
+        const questions = {
+            easy: [
+                {
+                    emoji: "👋",
+                    context: "Saludos básicos",
+                    question: "Hello! I <span class='blank'></span> Maria.",
+                    options: ["am", "is", "are", "be"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'I am' es la forma correcta para presentarse. En inglés siempre usamos 'am' con 'I'."
+                },
+                {
+                    emoji: "🏠",
+                    context: "Describiendo tu hogar",
+                    question: "This <span class='blank'></span> my house.",
+                    options: ["am", "is", "are", "be"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'This is' se usa para señalar algo cercano. 'This' siempre va con 'is'."
+                },
+                {
+                    emoji: "🎓",
+                    context: "En la escuela",
+                    question: "We <span class='blank'></span> students.",
+                    options: ["am", "is", "are", "be"],
+                    correct: 2,
+                    feedback: "¡Muy bien! 'We are' es correcto. Con 'we', 'you' (plural) y 'they' usamos 'are'."
+                },
+                {
+                    emoji: "🐶",
+                    context: "Hablando de mascotas",
+                    question: "My dog <span class='blank'></span> very friendly.",
+                    options: ["am", "is", "are", "be"],
+                    correct: 1,
+                    feedback: "¡Genial! 'My dog is' es correcto. 'My dog' (it) usa 'is'."
+                },
+                {
+                    emoji: "🍎",
+                    context: "Comida favorita",
+                    question: "I <span class='blank'></span> apples every day.",
+                    options: ["eat", "eats", "eating", "ate"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'I eat' es la forma base del verbo. Con 'I', 'you', 'we', 'they' no agregamos 's'."
+                },
+                {
+                    emoji: "⚽",
+                    context: "Deportes y hobbies",
+                    question: "She <span class='blank'></span> soccer on weekends.",
+                    options: ["play", "plays", "playing", "played"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'She plays' es correcto. Con 'he', 'she', 'it' agregamos 's' al verbo."
+                },
+                {
+                    emoji: "🚌",
+                    context: "Rutina escolar",
+                    question: "They <span class='blank'></span> to school by bus.",
+                    options: ["go", "goes", "going", "went"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'They go' usa la forma base. 'They' no necesita 's' en el verbo."
+                },
+                {
+                    emoji: "📚",
+                    context: "Actividades de lectura",
+                    question: "He <span class='blank'></span> books in the library.",
+                    options: ["read", "reads", "reading", "readed"],
+                    correct: 1,
+                    feedback: "¡Genial! 'He reads' es correcto. Con 'he' agregamos 's' al verbo 'read'."
+                },
+                {
+                    emoji: "⏰",
+                    context: "Rutina matutina",
+                    question: "I <span class='blank'></span> up at 7 AM.",
+                    options: ["wake", "wakes", "waking", "woke"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'I wake up' es la forma correcta. 'Wake up' significa despertar."
+                },
+                {
+                    emoji: "🎵",
+                    context: "Música y entretenimiento",
+                    question: "We <span class='blank'></span> to music together.",
+                    options: ["listen", "listens", "listening", "listened"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'We listen' es correcto. 'Listen to' significa escuchar algo específico."
+                }
+            ],
+            medium: [
+                {
+                    emoji: "☕",
+                    context: "Rutina matutina",
+                    question: "Every morning, I <span class='blank'></span> coffee before work.",
+                    options: ["drink", "drinks", "drinking", "drank"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'I drink' es correcto para rutinas. 'Every morning' indica una acción habitual."
+                },
+                {
+                    emoji: "💼",
+                    context: "Vida laboral",
+                    question: "She <span class='blank'></span> in a big company downtown.",
+                    options: ["work", "works", "working", "worked"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'She works' es correcto. Con 'she' siempre agregamos 's' al verbo."
+                },
+                {
+                    emoji: "📈",
+                    context: "Educación y aprendizaje",
+                    question: "They <span class='blank'></span> English three times a week.",
+                    options: ["study", "studies", "studying", "studied"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'They study' es la forma correcta. 'Three times a week' indica frecuencia."
+                },
+                {
+                    emoji: "🏃",
+                    context: "Ejercicio y salud",
+                    question: "He <span class='blank'></span> in the park every evening.",
+                    options: ["run", "runs", "running", "ran"],
+                    correct: 1,
+                    feedback: "¡Genial! 'He runs' es correcto. 'Every evening' muestra que es una rutina regular."
+                },
+                {
+                    emoji: "🍲",
+                    context: "Cocina y comidas",
+                    question: "My mother <span class='blank'></span> delicious meals for us.",
+                    options: ["cook", "cooks", "cooking", "cooked"],
+                    correct: 1,
+                    feedback: "¡Perfecto! 'My mother cooks' es correcto. 'Mother' es tercera persona singular (she)."
+                },
+                {
+                    emoji: "📱",
+                    context: "Tecnología y comunicación",
+                    question: "We <span class='blank'></span> our friends on social media.",
+                    options: ["contact", "contacts", "contacting", "contacted"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'We contact' es la forma correcta. 'We' usa la forma base del verbo."
+                },
+                {
+                    emoji: "🚗",
+                    context: "Transporte",
+                    question: "I <span class='blank'></span> to work because it's faster.",
+                    options: ["drive", "drives", "driving", "drove"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'I drive' es correcto. Es una acción habitual que describes en presente."
+                },
+                {
+                    emoji: "🎬",
+                    context: "Entretenimiento",
+                    question: "She <span class='blank'></span> movies on Netflix every weekend.",
+                    options: ["watch", "watches", "watching", "watched"],
+                    correct: 1,
+                    feedback: "¡Genial! 'She watches' es correcto. 'Every weekend' indica una rutina regular."
+                },
+                {
+                    emoji: "🛒",
+                    context: "Compras y consumo",
+                    question: "They <span class='blank'></span> groceries at the supermarket.",
+                    options: ["buy", "buys", "buying", "bought"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'They buy' es la forma correcta. 'They' siempre usa la forma base."
+                },
+                {
+                    emoji: "🎨",
+                    context: "Arte y creatividad",
+                    question: "He <span class='blank'></span> beautiful pictures in his free time.",
+                    options: ["draw", "draws", "drawing", "drew"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'He draws' es correcto. Es su hobby regular, por eso usamos presente simple."
+                },
+                {
+                    emoji: "✈️",
+                    context: "Viajes y cultura",
+                    question: "We <span class='blank'></span> to different countries every year.",
+                    options: ["travel", "travels", "traveling", "traveled"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'We travel' es correcto. 'Every year' indica una acción repetitiva."
+                },
+                {
+                    emoji: "✉️",
+                    context: "Comunicación profesional",
+                    question: "She <span class='blank'></span> important emails to clients daily.",
+                    options: ["send", "sends", "sending", "sent"],
+                    correct: 1,
+                    feedback: "¡Genial! 'She sends' es correcto. 'Daily' muestra que es parte de su rutina laboral."
+                },
+                {
+                    emoji: "🏊",
+                    context: "Deportes acuáticos",
+                    question: "I <span class='blank'></span> in the pool twice a week.",
+                    options: ["swim", "swims", "swimming", "swam"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'I swim' es la forma correcta. 'Twice a week' indica frecuencia regular."
+                },
+                {
+                    emoji: "🎉",
+                    context: "Eventos y celebraciones",
+                    question: "They <span class'blank'></span> their birthday parties at home.",
+                    options: ["organize", "organizes", "organizing", "organized"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'They organize' es correcto. Es su costumbre habitual para celebraciones."
+                },
+                {
+                    emoji: "🔧",
+                    context: "Reparaciones y mantenimiento",
+                    question: "He <span class='blank'></span> his car every month.",
+                    options: ["repair", "repairs", "repairing", "repaired"],
+                    correct: 1,
+                    feedback: "¡Muy bien! 'He repairs' es correcto. 'Every month' indica una rutina de mantenimiento."
+                },
+                {
+                    emoji: "👩‍🏫",
+                    context: "Educación y enseñanza",
+                    question: "My teacher <span class='blank'></span> us new vocabulary every class.",
+                    options: ["teach", "teaches", "teaching", "taught"],
+                    correct: 1,
+                    feedback: "¡Genial! 'My teacher teaches' es correcto. 'Teacher' es tercera persona singular."
+                },
+                {
+                    emoji: "🌱",
+                    context: "Jardinería y naturaleza",
+                    question: "We <span class='blank'></span> vegetables in our garden.",
+                    options: ["grow", "grows", "growing", "grew"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'We grow' es la forma correcta. Es una actividad que hacen regularmente."
+                },
+                {
+                    emoji: "🎤",
+                    context: "Música y arte",
+                    question: "She <span class='blank'></span> in the church choir every Sunday.",
+                    options: ["sing", "sings", "singing", "sang"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'She sings' es correcto. 'Every Sunday' muestra que es una actividad regular."
+                },
+                {
+                    emoji: "💻",
+                    context: "Trabajo y tecnología",
+                    question: "I <span class='blank'></span> reports for my boss weekly.",
+                    options: ["write", "writes", "writing", "wrote"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'I write' es correcto. 'Weekly' indica que es parte de tu rutina laboral."
+                },
+                {
+                    emoji: "🧘",
+                    context: "Ejercicio y bienestar",
+                    question: "They <span class='blank'></span> together in the morning for fitness.",
+                    options: ["exercise", "exercises", "exercising", "exercised"],
+                    correct: 0,
+                    feedback: "¡Genial! 'They exercise' es la forma correcta. Es su rutina matutina de ejercicio."
+                }
+            ],
+            hard: [
+                {
+                    emoji: "🎯",
+                    context: "Metas y objetivos profesionales",
+                    question: "She consistently <span class='blank'></span> her quarterly sales targets.",
+                    options: ["achieve", "achieves", "achieving", "achieved"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'She achieves' es correcto. 'Consistently' indica una acción habitual exitosa."
+                },
+                {
+                    emoji: "🔬",
+                    context: "Investigación científica",
+                    question: "The researchers <span class='blank'></span> complex data patterns daily.",
+                    options: ["analyze", "analyzes", "analyzing", "analyzed"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'The researchers analyze' es correcto. 'Researchers' es plural, usa la forma base."
+                },
+                {
+                    emoji: "🏛️",
+                    context: "Gobierno y administración",
+                    question: "The committee <span class='blank'></span> important policy decisions.",
+                    options: ["make", "makes", "making", "made"],
+                    correct: 1,
+                    feedback: "¡Muy bien! 'The committee makes' es correcto. 'Committee' es singular colectivo, usa 'makes'."
+                },
+                {
+                    emoji: "💡",
+                    context: "Innovación y desarrollo",
+                    question: "Our team <span class='blank'></span> innovative solutions for clients.",
+                    options: ["develop", "develops", "developing", "developed"],
+                    correct: 0,
+                    feedback: "¡Genial! 'Our team develop' es correcto. 'Team' puede ser plural en este contexto (refiriéndose a los miembros)."
+                },
+                {
+                    emoji: "💹",
+                    context: "Análisis financiero",
+                    question: "He carefully <span class='blank'></span> market trends before investing.",
+                    options: ["evaluate", "evaluates", "evaluating", "evaluated"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'He evaluates' es correcto. 'Carefully' describe cómo realiza la evaluación."
+                },
+                {
+                    emoji: "🌐",
+                    context: "Comunicación internacional",
+                    question: "They <span class='blank'></span> with partners across different time zones.",
+                    options: ["coordinate", "coordinates", "coordinating", "coordinated"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'They coordinate' es la forma correcta para acciones habituales de coordinación."
+                },
+                {
+                    emoji: "🎭",
+                    context: "Arte y performance",
+                    question: "The actor <span class='blank'></span> different characters masterfully.",
+                    options: ["portray", "portrays", "portraying", "portrayed"],
+                    correct: 1,
+                    feedback: "¡Muy bien! 'The actor portrays' es correcto. Describe su habilidad artística habitual."
+                },
+                {
+                    emoji: "🧐",
+                    context: "Investigación y análisis",
+                    question: "We <span class='blank'></span> every detail before making conclusions.",
+                    options: ["examine", "examines", "examining", "examined"],
+                    correct: 0,
+                    feedback: "¡Genial! 'We examine' es correcto. Describe su metodología de investigación rigurosa."
+                },
+                {
+                    emoji: "⚖️",
+                    context: "Sistema legal",
+                    question: "The judge <span class='blank'></span> cases based on evidence and law.",
+                    options: ["decide", "decides", "deciding", "decided"],
+                    correct: 1,
+                    feedback: "¡Excelente! 'The judge decides' es correcto. Describe su función judicial habitual."
+                },
+                {
+                    emoji: "🏙️",
+                    context: "Arquitectura y construcción",
+                    question: "The architects <span class='blank'></span> sustainable building designs.",
+                    options: ["create", "creates", "creating", "created"],
+                    correct: 0,
+                    feedback: "¡Perfecto! 'The architects create' es correcto. 'Architects' es plural, usa la forma base."
+                },
+                {
+                    emoji: "🧬",
+                    context: "Biotecnología",
+                    question: "She <span class='blank'></span> genetic sequences for medical research.",
+                    options: ["sequence", "sequences", "sequencing", "sequenced"],
+                    correct: 1,
+                    feedback: "¡Muy bien! 'She sequences' es correcto. Describe su trabajo especializado en genética."
+                },
+                {
+                    emoji: "🎼",
+                    context: "Composición musical",
+                    question: "The composer <span class='blank'></span> symphonies for orchestras worldwide.",
+                    options: ["write", "writes", "writing", "wrote"],
+                    correct: 1,
+                    feedback: "¡Genial! 'The composer writes' es correcto. Describe su actividad creativa profesional."
+                },
+                {
+                    emoji: "🌊",
+                    context: "Ciencias ambientales",
+                    question: "Marine biologists <span class='blank'></span> ocean ecosystems regularly.",
+                    options: ["study", "studies", "studying", "studied"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'Marine biologists study' es correcto. Es plural, usa la forma base del verbo."
+                },
+                {
+                    emoji: "🚀",
+                    context: "Tecnología espacial",
+                    question: "NASA <span class='blank'></span> space missions with precision planning.",
+                    options: ["execute", "executes", "executing", "executed"],
+                    correct: 1,
+                    feedback: "¡Perfecto! 'NASA executes' es correcto. NASA es una organización singular."
+                },
+                {
+                    emoji: "💎",
+                    context: "Gemología y joyería",
+                    question: "Expert gemologists <span class='blank'></span> precious stones accurately.",
+                    options: ["appraise", "appraises", "appraising", "appraised"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'Expert gemologists appraise' es correcto. Es plural, usa la forma base."
+                },
+                {
+                    emoji: "🖼️",
+                    context: "Curación de arte",
+                    question: "The curator <span class='blank'></span> exhibitions for contemporary art.",
+                    options: ["organize", "organizes", "organizing", "organized"],
+                    correct: 1,
+                    feedback: "¡Genial! 'The curator organizes' es correcto. Describe su función profesional habitual."
+                },
+                {
+                    emoji: "🧪",
+                    context: "Química analítica",
+                    question: "Laboratory technicians <span class='blank'></span> samples for contamination.",
+                    options: ["test", "tests", "testing", "tested"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'Laboratory technicians test' es correcto. Es plural, usa la forma base."
+                },
+                {
+                    emoji: "📡",
+                    context: "Telecomunicaciones",
+                    question: "The engineer <span class='blank'></span> satellite communication systems.",
+                    options: ["maintain", "maintains", "maintaining", "maintained"],
+                    correct: 1,
+                    feedback: "¡Perfecto! 'The engineer maintains' es correcto. Describe su responsabilidad técnica."
+                },
+                {
+                    emoji: "🩺",
+                    context: "Medicina especializada",
+                    question: "Surgeons <span class='blank'></span> complex procedures with expertise.",
+                    options: ["perform", "performs", "performing", "performed"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'Surgeons perform' es correcto. 'Surgeons' es plural, usa la forma base."
+                },
+                {
+                    emoji: "🤝",
+                    context: "Diplomacia internacional",
+                    question: "The ambassador <span class='blank'></span> international relations skillfully.",
+                    options: ["manage", "manages", "managing", "managed"],
+                    correct: 1,
+                    feedback: "¡Genial! 'The ambassador manages' es correcto. Describe su función diplomática habitual."
+                },
+                {
+                    emoji: "📊",
+                    context: "Estrategia empresarial",
+                    question: "Strategic planners <span class='blank'></span> long-term business objectives.",
+                    options: ["formulate", "formulates", "formulating", "formulated"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'Strategic planners formulate' es correcto. Es plural, usa la forma base."
+                },
+                {
+                    emoji: "🛡️",
+                    context: "Ciberseguridad",
+                    question: "The security analyst <span class='blank'></span> network vulnerabilities daily.",
+                    options: ["monitor", "monitors", "monitoring", "monitored"],
+                    correct: 1,
+                    feedback: "¡Perfecto! 'The security analyst monitors' es correcto. 'Daily' indica rutina habitual."
+                },
+                {
+                    emoji: "📋",
+                    context: "Gestión de eventos",
+                    question: "Event coordinators <span class'blank'></span> multiple projects simultaneously.",
+                    options: ["handle", "handles", "handling", "handled"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'Event coordinators handle' es correcto. Es plural, usa la forma base."
+                },
+                {
+                    emoji: "🌾",
+                    context: "Agricultura sostenible",
+                    question: "The agronomist <span class='blank'></span> crop rotation for soil health.",
+                    options: ["implement", "implements", "implementing", "implemented"],
+                    correct: 1,
+                    feedback: "¡Genial! 'The agronomist implements' es correcto. Describe su práctica profesional."
+                },
+                {
+                    emoji: "✍️",
+                    context: "Investigación académica",
+                    question: "University professors <span class='blank'></span> groundbreaking research annually.",
+                    options: ["publish", "publishes", "publishing", "published"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'University professors publish' es correcto. Es plural, usa la forma base."
+                },
+                {
+                    emoji: "🎬",
+                    context: "Producción cinematográfica",
+                    question: "The director <span class='blank'></span> creative vision into compelling films.",
+                    options: ["transform", "transforms", "transforming", "transformed"],
+                    correct: 1,
+                    feedback: "¡Perfecto! 'The director transforms' es correcto. Describe su proceso creativo habitual."
+                },
+                {
+                    emoji: "💡",
+                    context: "Ingeniería eléctrica",
+                    question: "Electrical engineers <span class='blank'></span> power distribution systems.",
+                    options: ["design", "designs", "designing", "designed"],
+                    correct: 0,
+                    feedback: "¡Muy bien! 'Electrical engineers design' es correcto. Es plural, usa la forma base."
+                },
+                {
+                    emoji: "📜",
+                    context: "Preservación histórica",
+                    question: "The historian <span class='blank'></span> ancient artifacts for future generations.",
+                    options: ["preserve", "preserves", "preserving", "preserved"],
+                    correct: 1,
+                    feedback: "¡Genial! 'The historian preserves' es correcto. Describe su misión de conservación."
+                },
+                {
+                    emoji: "🐳",
+                    context: "Oceanografía",
+                    question: "Oceanographers <span class='blank'></span> deep-sea phenomena extensively.",
+                    options: ["research", "researches", "researching", "researched"],
+                    correct: 0,
+                    feedback: "¡Excelente! 'Oceanographers research' es correcto. Es plural, usa la forma base."
+                },
+                {
+                    emoji: "❤️‍🩹",
+                    context: "Terapia artística",
+                    question: "The art therapist <span class='blank'></span> healing through creative expression.",
+                    options: ["facilitate", "facilitates", "facilitating", "facilitated"],
+                    correct: 1,
+                    feedback: "¡Perfecto! 'The art therapist facilitates' es correcto. Describe su método terapéutico."
+                }
+            ]
+        };
+
+        // --- VARIABLES GLOBALES DEL JUEGO ---
+
+        let currentLevel = '';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let gameStartTime = 0;
+        let suddenModeTimer = null;
+        let gameTimerInterval = null; // Para el temporizador principal
+        let suddenTimeLeft = 60;
+        let gameData = []; // Almacén de datos local
+        const STORAGE_KEY = 'wordQuestData'; // Clave para localStorage
+
+        // --- INICIALIZACIÓN ---
+
+        // Carga los datos guardados desde localStorage
+        function loadGameData() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                if (data) {
+                    gameData = JSON.parse(data);
+                } else {
+                    gameData = [];
+                }
+            } catch (error) {
+                console.error('Error loading data from localStorage:', error);
+                gameData = [];
+            }
+            updateHistoryDisplay();
+            updateRankingDisplay();
+        }
+
+        // Guarda los datos en localStorage
+        function persistGameData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
+            } catch (error) {
+                console.error('Error saving data to localStorage:', error);
+            }
+            // Actualizar vistas después de guardar
+            updateHistoryDisplay();
+            updateRankingDisplay();
+        }
+
+        // Función principal que se ejecuta al cargar la página
+        function initializeApp() {
+            // Cargar datos guardados
+            loadGameData();
+
+            // Configurar textos (reemplazando lo que haría el SDK)
+            document.getElementById('gameTitle').textContent = defaultConfig.game_title;
+            document.getElementById('easyLabel').textContent = defaultConfig.easy_label;
+            document.getElementById('mediumLabel').textContent = defaultConfig.medium_label;
+            document.getElementById('hardLabel').textContent = defaultConfig.hard_label;
+
+            console.log("WordQuest App Inicializada (Modo Standalone)");
+        }
+
+        // --- FUNCIONES DEL JUEGO ---
+
+        function startGame(level) {
+            currentLevel = level;
+            // Copia y baraja las preguntas del nivel
+            currentQuestions = [...questions[level]].sort(() => Math.random() - 0.5);
+            currentQuestionIndex = 0;
+            score = 0;
+            gameStartTime = Date.now();
+
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('timerDisplay').style.display = 'block';
+
+            updateProgress();
+            showQuestion();
+            startGameTimer();
+        }
+
+        function startSuddenMode() {
+            currentLevel = 'sudden';
+            currentQuestions = [...questions.hard].sort(() => Math.random() - 0.5); // Usa preguntas difíciles
+            currentQuestionIndex = 0;
+            score = 0;
+            gameStartTime = Date.now();
+            suddenTimeLeft = 60; // Tiempo límite
+
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('timerDisplay').style.display = 'block';
+            
+            // Configurar y mostrar temporizador de muerte súbita
+            const suddenTimerEl = document.getElementById('suddenTimer');
+            suddenTimerEl.style.display = 'block';
+            suddenTimerEl.textContent = suddenTimeLeft;
+            suddenTimerEl.classList.remove('warning');
+
+            updateProgress();
+            showQuestion();
+            startGameTimer(); // Inicia temporizador normal
+            startSuddenTimer(); // Inicia cuenta regresiva
+        }
+
+        function startSuddenTimer() {
+            if (suddenModeTimer) {
+                clearInterval(suddenModeTimer);
+            }
+            const timerElement = document.getElementById('suddenTimer');
+            suddenModeTimer = setInterval(() => {
+                suddenTimeLeft--;
+                timerElement.textContent = suddenTimeLeft;
+
+                if (suddenTimeLeft <= 10) {
+                    timerElement.classList.add('warning');
+                }
+
+                if (suddenTimeLeft <= 0) {
+                    clearInterval(suddenModeTimer);
+                    endGame(); // Termina el juego si se acaba el tiempo
+                }
+            }, 1000);
+        }
+
+        function updateProgress() {
+            const total = currentLevel === 'easy' ? 10 : currentLevel === 'medium' ? 20 : 30;
+            const current = currentQuestionIndex;
+            const progressFill = document.getElementById('progressFill');
+            // Evitar porcentaje mayor a 100 si se responde rápido
+            const percentage = Math.min((current / total) * 100, 100); 
+
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = `${current}/${total}`;
+        }
+
+        function showQuestion() {
+            const totalQuestions = currentLevel === 'easy' ? 10 : currentLevel === 'medium' ? 20 : 30;
+
+            // Condición de fin de juego
+            if (currentQuestionIndex >= totalQuestions) {
+                endGame();
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+
+            // Rellenar datos de la pregunta
+            document.getElementById('questionEmoji').textContent = question.emoji;
+            document.getElementById('questionContext').textContent = question.context;
+            document.getElementById('questionText').innerHTML = question.question;
+
+            // Generar botones de opciones
+            const optionsArea = document.getElementById('optionsArea');
+            optionsArea.innerHTML = "";
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsArea.appendChild(button);
+            });
+
+            // Limpiar feedback anterior
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = currentQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option-btn');
+            const feedback = document.getElementById('feedback');
+
+            // Deshabilitar todos los botones
+            options.forEach(btn => btn.disabled = true);
+
+            // Marcar respuesta correcta e incorrecta
+            options[question.correct].classList.add('correct');
+            if (selectedIndex !== question.correct) {
+                options[selectedIndex].classList.add('incorrect');
+            }
+
+            // Mostrar feedback
+            feedback.style.display = 'block';
+
+            if (selectedIndex === question.correct) {
+                score++; // Aumentar puntuación
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = question.feedback;
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `Incorrecto. ${question.feedback}`;
+            }
+
+            // Pausa antes de la siguiente pregunta
+            setTimeout(() => {
+                currentQuestionIndex++;
+                updateProgress(); // Actualizar barra
+                showQuestion();   // Mostrar siguiente pregunta
+            }, 3000); // 3 segundos de feedback
+        }
+
+        function startGameTimer() {
+            // Limpiar temporizador anterior si existe
+            if (gameTimerInterval) {
+                clearInterval(gameTimerInterval);
+            }
+
+            const timerElement = document.getElementById('gameTimer');
+            timerElement.textContent = '00:00'; // Reiniciar visualmente
+
+            gameTimerInterval = setInterval(() => {
+                const elapsed = Date.now() - gameStartTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function endGame() {
+            // Detener todos los temporizadores
+            if (suddenModeTimer) {
+                clearInterval(suddenModeTimer);
+            }
+            if (gameTimerInterval) {
+                clearInterval(gameTimerInterval);
+            }
+
+            const gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
+            const total = currentLevel === 'easy' ? 10 : currentLevel === 'medium' ? 20 : 30;
+            const percentage = Math.round((score / total) * 100);
+
+            // Ocultar pantalla de juego
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('timerDisplay').style.display = 'none';
+            document.getElementById('suddenTimer').style.display = 'none';
+
+            // Mostrar pantalla de resultados
+            document.getElementById('resultsScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `${score}/${total}`;
+
+            // Determinar medalla y mensaje
+            let medal, medalClass, message;
+
+            if (currentLevel === 'sudden' && suddenTimeLeft > 0 && percentage === 100) {
+                medal = '🏆';
+                medalClass = 'gold';
+                message = '¡Leyenda! ¡Completaste Muerte Súbita perfectamente!';
+            } else if (percentage >= 90) {
+                medal = '🥇';
+                medalClass = 'gold';
+                message = '¡Increíble! Eres un verdadero maestro del inglés.';
+            } else if (percentage >= 70) {
+                medal = '🥈';
+                medalClass = 'silver';
+                message = '¡Muy bien! Tienes un excelente dominio del inglés.';
+            } else if (percentage >= 50) {
+                medal = '🥉';
+                medalClass = 'bronze';
+                message = '¡Buen trabajo! Sigues mejorando tu inglés.';
+            } else {
+                medal = '📖';
+                medalClass = 'gray';
+                message = 'Sigue practicando. ¡Cada intento te hace mejor!';
+            }
+
+            document.getElementById('medalIcon').textContent = medal;
+            document.getElementById('medalIcon').className = `medal-icon ${medalClass}`;
+            document.getElementById('medalText').textContent = `${percentage}% Correcto`;
+            document.getElementById('medalText').className = `medal-text ${medalClass}`;
+            document.getElementById('resultMessage').textContent = message;
+
+            // Guardar resultado ANTES de pedir el nombre
+            saveGameResult(score, total, gameTime, percentage);
+
+            // Mostrar input de nombre si la puntuación es buena
+            if (percentage >= 50) {
+                const nameSection = document.getElementById('nameInputSection');
+                nameSection.style.display = 'block';
+                nameSection.className = `name-input-section ${medalClass}`;
+                document.getElementById('playerNameInput').value = ''; // Limpiar input
+            } else {
+                document.getElementById('nameInputSection').style.display = 'none';
+            }
+        }
+
+        // --- FUNCIONES DE DATOS (localStorage) ---
+
+        // Guarda el resultado en la variable 'gameData' y en localStorage
+        function saveGameResult(score, total, gameTime, percentage) {
+            const gameResult = {
+                id: Date.now().toString(),
+                level: currentLevel,
+                score: score,
+                total: total,
+                percentage: percentage,
+                timestamp: new Date().toISOString(),
+                player_name: "", // Se actualizará después
+                game_time: gameTime
+            };
+            
+            gameData.push(gameResult);
+            persistGameData(); // Llama a la función que guarda en localStorage
+        }
+
+        // Actualiza el último juego con el nombre del jugador
+        function savePlayerName() {
+            const nameInput = document.getElementById('playerNameInput');
+            const playerName = nameInput.value.trim();
+
+            if (!playerName || gameData.length === 0) {
+                return; // No hacer nada si no hay nombre o no hay datos
+            }
+
+            // Encontrar el último resultado (que acabamos de guardar) y actualizarlo
+            const lastResult = gameData[gameData.length - 1];
+            if (lastResult && lastResult.player_name === "") {
+                lastResult.player_name = playerName;
+                persistGameData(); // Guardar el cambio en localStorage
+
+                // Ocultar input después de guardar
+                document.getElementById('nameInputSection').style.display = 'none';
+                nameInput.value = "";
+            }
+        }
+
+        // Actualiza el HTML de la pestaña Historial
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+
+            if (gameData.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No hay partidas registradas aún. ¡Juega tu primera partida!</p>';
+                return;
+            }
+
+            // Ordenar del más nuevo al más viejo
+            const sortedData = [...gameData].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            historyList.innerHTML = sortedData.map(game => {
+                const date = new Date(game.timestamp).toLocaleDateString();
+                const time = Math.floor(game.game_time / 60) + ':' + (game.game_time % 60).toString().padStart(2, '0');
+
+                let levelName = "";
+                switch(game.level) {
+                    case 'easy': levelName = 'Explorador'; break;
+                    case 'medium': levelName = 'Aventurero'; break;
+                    case 'hard': levelName = 'Maestro'; break;
+                    case 'sudden': levelName = 'Muerte Súbita'; break;
+                }
+
+                return `
+                <div class="history-item">
+                    <div>
+                        <strong>${levelName}</strong><br>
+                        <small>${date} - ${time} min</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong>${game.score}/${game.total}</strong><br>
+                        <small>${game.percentage}%</small>
+                    </div>
+                </div>
+                `;
+            }).join("");
+        }
+
+        // Actualiza el HTML de la pestaña Ranking
+        function updateRankingDisplay() {
+            const rankingList = document.getElementById('rankingList');
+            const playersWithNames = gameData.filter(game => game.player_name); // Solo juegos con nombre
+
+            if (playersWithNames.length === 0) {
+                rankingList.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No hay jugadores en el ranking aún. ¡Sé el primero en aparecer!</p>';
+                return;
+            }
+
+            // Agrupar por jugador y encontrar su MEJOR puntuación
+            const playerStats = {};
+            playersWithNames.forEach(game => {
+                const percentage = game.percentage;
+                if (!playerStats[game.player_name] || percentage > playerStats[game.player_name].percentage) {
+                    playerStats[game.player_name] = {
+                        name: game.player_name,
+                        percentage: percentage,
+                        score: game.score,
+                        total: game.total,
+                        level: game.level
+                    };
+                }
+            });
+
+            // Ordenar por porcentaje (del mejor al peor)
+            const sortedPlayers = Object.values(playerStats).sort((a, b) => b.percentage - a.percentage);
+
+            rankingList.innerHTML = sortedPlayers.map((player, index) => {
+                let medal = "";
+                let rankClass = "";
+                if (index === 0) {
+                    medal = '🥇';
+                    rankClass = 'gold';
+                } else if (index === 1) {
+                    medal = '🥈';
+                    rankClass = 'silver';
+                } else if (index === 2) {
+                    medal = '🥉';
+                    rankClass = 'bronze';
+                }
+
+                let levelName = "";
+                switch(player.level) {
+                    case 'easy': levelName = 'Explorador'; break;
+                    case 'medium': levelName = 'Aventurero'; break;
+                    case 'hard': levelName = 'Maestro'; break;
+                    case 'sudden': levelName = 'Muerte Súbita'; break;
+                }
+
+                return `
+                <div class="ranking-item ${rankClass}">
+                    <div>
+                        <span class="medal">${medal}</span>
+                        <span class="player-name">${player.name}</span><br>
+                        <small>Mejor partida: ${levelName}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong>${player.score}/${player.total}</strong><br>
+                        <small>${player.percentage}%</small>
+                    </div>
+                </div>
+                `;
+            }).join("");
+        }
+
+        // --- NAVEGACIÓN Y OTROS ---
+
+        function showTab(tabName, event) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Quitar 'active' de todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Mostrar el contenido de la pestaña seleccionada
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            // Marcar el botón presionado como 'active'
+            event.target.classList.add('active');
+        }
+
+        function showDictionary() {
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('dictionaryScreen').style.display = 'block';
+            showDictionaryLevel('easy'); // Mostrar nivel fácil por defecto
+        }
+
+        function showDictionaryLevel(level) {
+            // Resaltar el botón del nivel presionado
+            document.querySelectorAll('#dictionaryScreen .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('dict' + level.charAt(0).toUpperCase() + level.slice(1) + 'Btn').classList.add('active');
+
+            const content = document.getElementById('dictionaryContent');
+            const levelQuestions = questions[level];
+            const words = new Set(); // Usar un Set para evitar palabras duplicadas
+
+            // Recolectar todas las palabras de las opciones y respuestas correctas
+            levelQuestions.forEach(q => {
+                q.options.forEach(option => {
+                    if (translations[option]) {
+                        words.add(option);
+                    }
+                });
+                const correctWord = q.options[q.correct];
+                if (translations[correctWord]) {
+                    words.add(correctWord);
+                }
+            });
+
+            const sortedWords = Array.from(words).sort(); // Convertir Set a Array y ordenar
+
+            if (sortedWords.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666;">No hay palabras en el diccionario para este nivel.</p>';
+                return;
+            }
+
+            // Generar el HTML para cada palabra
+            content.innerHTML = sortedWords.map(word =>
+                `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <span class="word-tooltip" style="font-weight: 600; color: #667eea; cursor: help;">
+                        ${word}
+                        <div class="tooltip-content">${translations[word]}</div>
+                    </span>
+                    <span style="color: #666;">${translations[word]}</span>
+                </div>
+                `
+            ).join("");
+        }
+
+        function backToMenuFromDictionary() {
+            document.getElementById('dictionaryScreen').style.display = 'none';
+            document.getElementById('menuScreen').style.display = 'block';
+        }
+
+        function showExitConfirmation() {
+            document.getElementById('exitModal').style.display = 'flex';
+        }
+
+        function confirmExit() {
+            // Detener todos los temporizadores
+            if (suddenModeTimer) {
+                clearInterval(suddenModeTimer);
+            }
+            if (gameTimerInterval) {
+                clearInterval(gameTimerInterval);
+            }
+
+            // Ocultar pantallas de juego y modal
+            document.getElementById('exitModal').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('timerDisplay').style.display = 'none';
+            document.getElementById('suddenTimer').style.display = 'none';
+            
+            // Mostrar menú principal
+            document.getElementById('menuScreen').style.display = 'block';
+        }
+
+        function cancelExit() {
+            document.getElementById('exitModal').style.display = 'none';
+        }
+
+        function backToMenu() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('nameInputSection').style.display = 'none'; // Ocultar por si acaso
+            document.getElementById('menuScreen').style.display = 'block';
+        }
+
+        // INICIALIZAR LA APLICACIÓN
+        // Se asegura de que todo el HTML esté cargado antes de ejecutar el script
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
