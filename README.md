@@ -1,2 +1,0 @@
-# WordQuest
-Game aprender inglés 
